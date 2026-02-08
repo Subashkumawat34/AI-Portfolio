@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SUBASH KUMAWAT</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <script src="https://unpkg.com/scrollreveal"></script>
+
+    <style>
+      /* --- NEW COLOR PALETTE --- */
+      :root {
+        --bg-color: #1a237e; /* Deep Indigo/Blue */
+        --second-bg-color: #283593; /* Slightly Lighter Blue */
+        --text-color: #e8eaf6; /* Light Blue/Gray */
+        --main-color: #00ff7f; /* Neon Green/Spring Green */
+        --headings-color: rgba(
+          26,
+          35,
+          126,
+          0.7
+        ); /* Semi-transparent Deep Blue */
+      }
+      /* --- END NEW COLOR PALETTE --- */
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: var(--bg-color);
+        color: var(--text-color);
+        overflow-x: hidden;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        font-size: 62.5%; /* 1rem = 10px */
+      }
+
+      /* Logo Removal Cleanup */
+      .logo-div {
+        display: flex;
+        align-items: center;
+      }
+      .sk-logo {
+        display: none; /* Removed the animated logo box */
+      }
+
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 1.5rem 10%; /* Adjusted padding for logo removal */
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: space-between; /* Adjusted to space-between after logo removal */
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .logo {
+        font-size: 3.5rem;
+        color: var(--text-color);
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: "Dancing Script", cursive;
+      }
+      .logo span {
+        color: var(--main-color);
+        text-shadow: 0 0 10px var(--main-color);
+        font-family: "Dancing Script", cursive;
+      }
+
+      .navbar a {
+        font-size: 1.8rem;
+        color: var(--text-color);
+        margin-left: 4rem;
+        font-weight: 500;
+        transition: 0.3s ease;
+        border-bottom: 3px solid transparent;
+        text-decoration: none;
+      }
+
+      .navbar a:hover,
+      .navbar a.active {
+        color: var(--main-color);
+        border-bottom: 3px solid var(--main-color);
+      }
+
+      #menu-icon {
+        font-size: 3.6rem;
+        color: var(--main-color);
+        display: none;
+      }
+
+      section {
+        min-height: 100vh;
+        padding: 10rem 10%;
+      }
+
+      .home {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8rem;
+        min-height: 100vh;
+      }
+      .home-content h1 {
+        font-size: 6rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .home-content h3 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+      }
+      .home-content span {
+        color: var(--main-color);
+      }
+      .home-content p {
+        font-size: 1.8rem;
+        font-weight: 400;
+        line-height: 1.6;
+        max-width: 900px;
+      }
+
+      .home-img {
+        display: none; /* Image removed */
+      }
+
+      .social-icons a {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 4.5rem;
+        height: 4.5rem;
+        background: transparent;
+        border: 2px solid var(--main-color);
+        font-size: 2.2rem;
+        border-radius: 50%;
+        color: var(--main-color);
+        margin: 3rem 1.5rem 3rem 0;
+        transition: 0.3s ease-in-out;
+        text-decoration: none;
+      }
+      .social-icons a:hover {
+        color: var(--bg-color);
+        transform: scale(1.1) translateY(-5px);
+        box-shadow: 0 0 25px var(--main-color);
+        background-color: var(--main-color);
+      }
+      .btn {
+        display: inline-block;
+        padding: 1.2rem 3rem;
+        background: var(--main-color);
+        box-shadow: 0 0 15px var(--main-color);
+        border-radius: 1rem;
+        font-size: 1.6rem;
+        color: var(--bg-color);
+        border: 2px solid transparent;
+        font-weight: 600;
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .btn:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 30px var(--main-color);
+      }
+
+      .btn-group a:nth-of-type(2) {
+        background-color: transparent;
+        color: var(--main-color);
+        border: 2px solid var(--main-color);
+        box-shadow: none;
+      }
+      .btn-group a:nth-of-type(2):hover {
+        box-shadow: 0 0 25px var(--main-color);
+        background-color: var(--main-color);
+        color: var(--bg-color);
+      }
+
+      .heading {
+        font-size: 4.5rem;
+        text-align: center;
+        margin: 2rem auto 7rem;
+        padding: 0.5rem 2rem;
+        box-shadow: 0 0 5px var(--text-color);
+        border-radius: 50px;
+        background-color: var(--headings-color);
+        display: table; /* Use table to center the block element */
+      }
+
+      /* Education Section */
+      .education {
+        background: var(--second-bg-color);
+      }
+      .timeline-items::before {
+        background-color: var(--main-color);
+      }
+      .timeline-dot {
+        background-color: var(--main-color);
+        box-shadow: 0 0 15px var(--main-color);
+      }
+      .timeline-date {
+        font-size: 1.8rem;
+      }
+      .timeline-content {
+        background-color: var(--bg-color);
+        border: 3px solid var(--main-color);
+        padding: 25px 40px;
+        border-radius: 2rem;
+        box-shadow: 0 0 10px var(--main-color);
+      }
+      .timeline-content:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px var(--main-color);
+      }
+      .timeline-content h3 {
+        font-size: 2.2rem;
+      }
+      .timeline-content span {
+        color: var(--main-color);
+      }
+      .timeline-content p,
+      .bullets-points {
+        font-size: 1.6rem;
+      }
+      .bullets-points {
+        list-style: disc inside;
+        margin-top: 1rem;
+      }
+
+      /* Projects Section Enhancement */
+      .projects {
+        background: var(--bg-color);
+      }
+      .projects h2 {
+        color: var(--text-color);
+      }
+      .projects-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3.5rem;
+      }
+      .project-box {
+        background-color: var(--second-bg-color);
+        border-radius: 1.5rem;
+        padding: 3.5rem;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        border: 2px solid var(--second-bg-color);
+        transition: 0.4s ease-in-out;
+      }
+      .project-box:hover {
+        border: 2px solid var(--main-color);
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px rgba(0, 255, 127, 0.3);
+      }
+      .project-box h4 {
+        font-size: 2.8rem;
+        color: var(--main-color);
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--main-color);
+        padding-bottom: 0.5rem;
+      }
+      .project-box p {
+        font-size: 1.6rem;
+        color: var(--text-color);
+        line-height: 1.5;
+        margin-bottom: 2rem;
+      }
+      .project-tools {
+        font-size: 1.4rem;
+        color: #b3e5fc; /* Light blue accent */
+        font-weight: 500;
+        margin-bottom: 2rem;
+      }
+      .external-links a {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 4.5rem;
+        height: 4.5rem;
+        background: var(--main-color);
+        border-radius: 50%;
+        color: var(--bg-color);
+        font-size: 2rem;
+        margin-right: 1.5rem;
+        transition: 0.3s ease;
+      }
+      .external-links a:hover {
+        background: var(--bg-color);
+        color: var(--main-color);
+        box-shadow: 0 0 10px var(--main-color);
+      }
+
+      /* Technologies Section */
+      .technologies {
+        background: var(--second-bg-color);
+      }
+      .wrapper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 5rem;
+        row-gap: 5rem;
+      }
+      .tech-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .tech-item i {
+        font-size: 6rem;
+        color: var(--main-color);
+        padding: 1rem;
+        border: 3px solid var(--main-color);
+        border-radius: 10%;
+        box-shadow: 0 0 20px var(--main-color);
+        transition: 0.3s ease-in-out;
+      }
+      .tech-item i:hover {
+        transform: scale(1.1);
+      }
+      .tech-item h2 {
+        font-size: 2rem;
+        color: var(--text-color);
+      }
+
+      /* Contact Section */
+.contact form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;              /* 🔹 Make both columns equal height */
+  gap: 3rem;
+  max-width: 850px;
+  margin: 5rem auto;
+}
+
+/* Common styles for inputs + textarea */
+.contact form .input-box input,
+.contact form textarea {
+  width: 100%;
+  padding: 1.5rem;
+  font-size: 1.8rem;
+  color: var(--text-color);
+  background: var(--second-bg-color);     /* 🔹 Same background for both sides */
+  border-radius: 1rem;
+  border: 2px solid var(--main-color);    /* Neon border */
+  resize: none;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Placeholder text: same style on both sides */
+.contact form .input-box input::placeholder,
+.contact form textarea::placeholder {
+  color: rgba(232, 234, 246, 0.7);
+}
+
+.contact form .input-box input:focus,
+.contact form textarea:focus {
+  outline: none;
+  box-shadow: 0 0 20px var(--main-color);
+  transform: scale(1.01);
+}
+
+/* LEFT COLUMN: 4 inputs equally divided vertically */
+.input-group {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;                /* Space between boxes */
+}
+
+/* Each input-box takes equal height */
+.input-group .input-box {
+  flex: 1;                    /* 🔹 All 4 boxes share height equally */
+  display: flex;
+}
+
+/* Make input fill its box fully (no extra margin) */
+.input-group .input-box input {
+  margin: 0;                  /* remove top/bottom margin so flex works cleanly */
+}
+
+/* RIGHT COLUMN: message box + button */
+.input-group-2 {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make textarea fill vertical space of its column */
+.input-group-2 textarea {
+  flex-grow: 1;               /* 🔹 Matches the height of the left column */
+  min-height: 200px;
+  margin-bottom: 1.5rem;      /* Space from button */
+}
+
+/* Button style */
+.contact form button[type="submit"] {
+  width: 100%;
+  padding: 1.5rem 3rem;
+  font-size: 1.8rem;
+  background: var(--main-color);
+  color: var(--bg-color);
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 0 15px var(--main-color);
+  transition: 0.3s ease-in-out;
+}
+
+.contact form button[type="submit"]:hover {
+  background: var(--text-color);
+  color: var(--bg-color);
+  box-shadow: 0 0 30px var(--main-color);
+  transform: scale(1.02);
+}
+
+      /* Footer */
+      .footer {
+        background: var(--second-bg-color);
+        padding: 4rem 10%; /* Increased padding for better visual weight */
+        text-align: center;
+      }
+
+      .footer .social {
+        padding-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem; /* Added gap between icons */
+      }
+
+      .footer .social a {
+        font-size: 2.5rem; /* Slightly larger icon size */
+        color: var(--main-color);
+        border: 2px solid var(--main-color);
+        width: 50px; /* Larger hit area */
+        height: 50px;
+        line-height: 46px; /* Center icon vertically */
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .footer .social a:hover {
+        background-color: var(--main-color);
+        color: var(--bg-color);
+        box-shadow: 0 0 20px var(--main-color); /* Enhanced glow on hover */
+      }
+
+      .footer .list {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin: 2rem 0;
+      }
+
+      .footer .list li a {
+        text-decoration: none;
+        color: var(--text-color);
+        font-size: 1.8rem;
+        font-weight: 500;
+        transition: 0.3s ease;
+        padding-bottom: 0.2rem;
+        border-bottom: 3px solid transparent;
+      }
+      .footer .list li a:hover {
+        border-bottom-color: var(--main-color);
+        color: var(--main-color);
+      }
+
+      .footer .copyright {
+        margin-top: 3rem;
+        font-size: 1.6rem;
+        color: var(--text-color);
+      }
+
+      /* --- MEDIA QUERIES FOR CONTACT (Responsive Fixes) --- */
+
+      @media (max-width: 885px) {
+        .contact form {
+          flex-direction: column;
+          gap: 2rem;
+        }
+        .input-group,
+        .input-group-2 {
+          width: 100%;
+        }
+        .input-group-2 textarea {
+          min-height: 150px;
+        }
+      }
+
+      /* Media Queries */
+      @media (max-width: 1285px) {
+        .projects-container {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 991px) {
+        .header {
+          padding: 1.5rem 3%;
+        }
+        section {
+          padding: 8rem 3% 2rem;
+        }
+        .wrapper {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (max-width: 885px) {
+        #menu-icon {
+          display: block;
+        }
+        .navbar {
+          position: absolute;
+          top: 100%;
+          right: 1rem;
+          width: 50%;
+          padding: 1rem 2%;
+          background: rgba(0, 0, 0, 0.8);
+          backdrop-filter: blur(20px);
+          border-radius: 2rem;
+          border: 2px solid var(--main-color);
+          display: none;
+          transition: 0.3s ease-in-out;
+        }
+
+        .navbar.active {
+          display: block;
+          width: 250px;
+          overflow: hidden;
+        }
+
+        .navbar a {
+          display: block;
+          font-size: 2rem;
+          margin: 1.5rem 0;
+          width: 100%;
+        }
+        .home {
+          flex-direction: column;
+          text-align: center;
+          gap: 3rem;
+          min-height: 80vh;
+        }
+        .home-content {
+          order: 2; /* Ensure content is below image (if it were visible) or centered */
+        }
+        .home-content h1 {
+          font-size: 5rem;
+        }
+        .home-content h3 {
+          font-size: 2.5rem;
+        }
+        .home-content p {
+          max-width: 100%;
+        }
+        .contact form {
+          flex-direction: column;
+          gap: 2rem;
+        }
+        .input-group,
+        .input-group-2 {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 650px) {
+        .projects-container {
+          grid-template-columns: 1fr;
+        }
+        .wrapper {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 500px) {
+        .wrapper {
+          grid-template-columns: repeat(1, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-div">
+        <a href="#home" class="logo">SUBASH KUMAWAT<span></span></a>
+      </div>
+      <i class="bx bx-menu" id="menu-icon"></i>
+      <nav class="navbar" id="navbar">
+        <a href="#home" class="active">Home</a>
+        <a href="#education">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#technologies">Skills</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <section class="home" id="home">
+      <div class="home-content">
+        <h1>Hey, It's <span>SUBASH KUMAWAT</span></h1>
+        <h3>Full-Stack Developer | Innovator | Problem Solver</h3>
+        <p>
+          I&#39;m a seasoned Full-Stack Developer with experience in building scalable and high-performance web applications. My passion lies in crafting clean, efficient code and transforming complex problems into intuitive user interfaces. I specialize in the MERN stack but thrive on adopting new technologies to push the boundaries of what&#39;s possible on the web.
+        </p>
+        <div class="social-icons">
+          
+            <!-- fallback icons (non-clickable) -->
+            <a href="#" aria-hidden="true"><i class="bx bxl-linkedin"></i></a>
+            <a href="#" aria-hidden="true"><i class="bx bxl-github"></i></a>
+            <a href="#" aria-hidden="true"><i class="bx bxl-twitter"></i></a>
+            <a href="#" aria-hidden="true"><i class="bx bxl-instagram"></i></a>
+          
+        </div>
+        <div class="btn-group">
+          
+            <a href="#" class="btn">Download Resume</a>
+          
+          <a href="#contact" class="btn">Contact Me</a>
+        </div>
+      </div>
+      <div class="home-img">
+        
+      </div>
+    </section>
+
+    <hr />
+
+    <section class="education" id="education">
+      <h2 class="heading">Education & Work Experience</h2>
+      <div class="timeline-items">
+        
+          
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date"> - </div>
+              <div class="timeline-content">
+                <h3>
+                  <span>Bachelor of Technology - Computer Science</span>, Arya College of Engineering and IT, Jaipur
+                </h3>
+                
+                  <p>8.76 CGPA</p>
+                
+              </div>
+            </div>
+          
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date"> - </div>
+              <div class="timeline-content">
+                <h3>
+                  <span>Senior Secondary (XII) – Science</span>, Saraswati Shiksha Niketan Senior Secondary School (RBSE)
+                </h3>
+                
+                  <p>71.80%</p>
+                
+              </div>
+            </div>
+          
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date"> - </div>
+              <div class="timeline-content">
+                <h3>
+                  <span>Secondary (Class X)</span>, Saraswati Shiksha Niketan Senior Secondary School (RBSE)
+                </h3>
+                
+                  <p>60.50%</p>
+                
+              </div>
+            </div>
+          
+        
+
+        
+          
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date"></div>
+              <div class="timeline-content">
+                <h3><span>Salesforce Programming Architect</span>, </h3>
+                
+                  <p>Built Salesforce applications using Apex, Visualforce &amp; LWC.,Implemented workflows using SOQL &amp; automation tool</p>
+                
+              </div>
+            </div>
+          
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date"></div>
+              <div class="timeline-content">
+                <h3><span>Fundamentals of Salesforce</span>, </h3>
+                
+                  <p>Developed Event Management App using Salesforce Ecosystem.,Worked with Process Builder, Lightning Components &amp; Data Models.</p>
+                
+              </div>
+            </div>
+          
+        
+      </div>
+    </section>
+
+    <hr />
+
+    <section class="projects" id="projects">
+      <h2 class="heading">Key Projects</h2>
+      <div class="projects-container">
+        
+          
+            <div class="project-box">
+              
+              
+                <h4>FarmChainX-AI Driven Agricultural Traceability Network (Full-Stack)</h4>
+                <p>Implemented role-based modules for Farmer, Distributer, Retailer, Consumer &amp; Admin.,Enabled real-time product tracking, procurement, inventory, dispatch &amp; verification flows.</p>
+                <div class="project-tools"></div>
+                <div class="external-links">
+                  
+                  
+                </div>
+              
+            </div>
+          
+            <div class="project-box">
+              
+              
+                <h4>AI-Based Portfolio Website Generator (Full-Stack)</h4>
+                <p>Developed an AI- powered portfolio generator with automated deployment support.</p>
+                <div class="project-tools"></div>
+                <div class="external-links">
+                  
+                  
+                </div>
+              
+            </div>
+          
+            <div class="project-box">
+              
+              
+                <h4>Event Management Application (Salesforce Project)</h4>
+                <p>Automated event planning &amp; analytics system within Salesforce ecosystem.</p>
+                <div class="project-tools"></div>
+                <div class="external-links">
+                  
+                  
+                </div>
+              
+            </div>
+          
+        
+      </div>
+    </section>
+
+    <hr />
+
+    <section class="technologies" id="technologies">
+      <div class="technologies-box">
+        <h2 class="heading">Core Skills</h2>
+        <div class="wrapper">
+          
+            
+              <div class="tech-item">
+                
+                  <i class="fa-solid fa-circle"></i>
+                
+                <h2>Java</h2>
+              </div>
+            
+              <div class="tech-item">
+                
+                  <i class="fa-solid fa-circle"></i>
+                
+                <h2>JavaScript</h2>
+              </div>
+            
+              <div class="tech-item">
+                
+                  <i class="fa-solid fa-circle"></i>
+                
+                <h2>Python</h2>
+              </div>
+            
+              <div class="tech-item">
+                
+                  <i class="fa-solid fa-circle"></i>
+                
+                <h2>Apex</h2>
+              </div>
+            
+          
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <section class="contact" id="contact">
+      <h2 class="heading">Contact <span>Me</span></h2>
+      <form name="contact" novalidate>
+        <div class="input-group">
+          
+            
+              
+                <div class="input-box">
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    id="fullName"
+                    name="fullName"
+                    title="Full Name"
+                    required
+                  />
+                </div>
+              
+            
+              
+                <div class="input-box">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    id="email"
+                    name="email"
+                    title="Email"
+                    required
+                  />
+                </div>
+              
+            
+              
+                <div class="input-box">
+                  <input
+                    type="text"
+                    placeholder="Phone Number"
+                    id="phone"
+                    name="phone"
+                    title="Phone Number"
+                    required
+                  />
+                </div>
+              
+            
+              
+                <div class="input-box">
+                  <input
+                    type="text"
+                    placeholder="Subject"
+                    id="subject"
+                    name="subject"
+                    title="Subject"
+                    required
+                  />
+                </div>
+              
+            
+              
+            
+          
+        </div>
+        <div class="input-group-2">
+          
+          
+            <textarea cols="30" rows="10" placeholder="Message" id="message" name="message" required></textarea>
+          
+          <button type="submit" class="btn">Send Message</button>
+        </div>
+      </form>
+    </section>
+
+    <hr />
+
+    <footer class="footer">
+      <div class="social">
+        
+          <a href="#" target="_blank"><i class="bx bxl-linkedin"></i></a>
+          <a href="#" target="_blank"><i class="bx bxl-github"></i></a>
+          <a href="#" target="_blank"><i class="bx bxl-twitter"></i></a>
+          <a href="#" target="_blank"><i class="bx bxl-instagram"></i></a>
+        
+      </div>
+      <ul class="list">
+        <li><a href="#home">About me</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#technologies">Skills</a></li>
+      </ul>
+      <p class="copyright">© SUBASH KUMAWAT | All Rights Reserved 2026</p>
+    </footer>
+
+    <script>
+      // 1. Navbar Menu Toggle (preserve original behaviour)
+      const menuIcon = document.getElementById("menu-icon");
+      const navbar = document.getElementById("navbar");
+
+      menuIcon.onclick = function () {
+        navbar.classList.toggle("active");
+      };
+
+      // Close navbar on link click (important for mobile UX)
+      document.querySelectorAll(".navbar a").forEach((item) => {
+        item.addEventListener("click", () => {
+          if (window.innerWidth <= 885) {
+            navbar.classList.remove("active");
+          }
+        });
+      });
+
+      // 2. Scroll Reveal Animation Setup (preserve original)
+      ScrollReveal({
+        reset: false, // Set to true if you want animations to repeat on scroll up/down
+        distance: "80px",
+        duration: 1500,
+        delay: 200,
+      });
+
+      // Apply animations to sections
+      ScrollReveal().reveal(".home-content, .heading", { origin: "top" });
+      ScrollReveal().reveal(
+        ".timeline-item, .project-box, .tech-item, .contact form",
+        {
+          origin: "bottom",
+          interval: 100,
+        }
+      );
+      ScrollReveal().reveal(".home-content h1", { origin: "left" });
+    </script>
+  </body>
+</html>

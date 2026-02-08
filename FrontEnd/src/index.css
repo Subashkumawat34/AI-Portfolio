@@ -1,0 +1,44 @@
+/* Minimal global styles and resets */
+
+/* Apply a natural box layout model to all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin from body */
+body {
+  margin: 0;
+  line-height: 1.6; /* Improved readability for text */
+  font-size: 16px; /* Base font size */
+}
+
+/* Responsive images and videos */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block; /* Removes bottom space under images */
+}
+
+/* Improve text rendering */
+body,
+input,
+button,
+textarea,
+select {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif; /* Modern font stack */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Basic accessible focus outline for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid Highlight; /* Or your primary color, using system highlight */
+  outline: 2px solid -webkit-focus-ring-color; /* For Safari */
+  outline-offset: 2px;
+}
+
+/* Other very generic styles could go here, but prefer component-specific or utility classes */

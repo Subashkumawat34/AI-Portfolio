@@ -1,0 +1,47 @@
+# Node modules in root or frontend
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+
+# Frontend build (if using React/Vite)
+frontend/dist/
+frontend/build/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Generated files
+coverage/
+.temp/
+.cache/
+
+# If you push to Vercel from root
+.vercel/
+
+# Files with secrets (DO NOT COMMIT)
+BackEnd/test-hardcoded.js
+BackEnd/test-github-direct.js
+BackEnd/server_log.txt
+BackEnd/model-list-output.txt
+

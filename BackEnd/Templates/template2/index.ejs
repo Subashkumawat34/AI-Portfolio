@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="<%= locals.personalInfo && personalInfo.fullName ? personalInfo.fullName : 'Portfolio' %> - Professional Portfolio Website" />
+  <meta name="keywords" content="Developer, Portfolio, Web Development" />
+  <meta name="author"
+    content="<%= locals.personalInfo && personalInfo.fullName ? personalInfo.fullName : 'Portfolio Owner' %>" />
+  <meta name="theme-color" content="#667eea" />
+
+  <title>
+    <%= locals.personalInfo && personalInfo.fullName ? personalInfo.fullName : 'Portfolio' %> - Portfolio
+  </title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+
+  <!-- Icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/ffe8c3f3d7.js" crossorigin="anonymous"></script>
+
+  <!-- Toast Notifications -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+
+  <!-- Scroll Reveal -->
+  <script src="https://unpkg.com/scrollreveal"></script>
+  <!-- Typed.js -->
+  <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+  <!-- Three.js for 3D elements -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    <%- include('styles') %>
+  </style>
+</head>
+
+<body>
+  <!--============== Loading Screen ==============-->
+  <div id="loader" class="loader">
+    <div class="loader-content">
+      <!-- Animated Spinner -->
+      <div class="loader-spinner">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="loader-logo-center">
+          <span class="logo-initials">
+            <%= locals.personalInfo && personalInfo.fullName ?
+              personalInfo.fullName.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() : ' SK' %>
+          </span>
+        </div>
+      </div>
+
+      <!-- Percentage Counter -->
+      <div class="loader-percentage">
+        <span id="loader-count">0</span>%
+      </div>
+
+      <!-- Loading Text -->
+      <p class="loader-text">Loading Portfolio...</p>
+    </div>
+  </div>
+
+  <!-- Header Section -->
+  <header class="header" id="header">
+    <div class="sk-logo-div">
+      <a href="#home" class="logo"
+        aria-label="<%= locals.personalInfo && personalInfo.fullName ? personalInfo.fullName : 'Home' %>">
+        <%= locals.personalInfo && personalInfo.fullName ? personalInfo.fullName.split(' ')[0] : ' Your Name' %>
+          <% if (locals.personalInfo && personalInfo.fullName && personalInfo.fullName.split(' ').length > 1) { %>
+          <span><%= personalInfo.fullName.split(' ').slice(1).join(' ') %></span>
+        <% } %>
+      </a>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+      <i class="bx bx-moon" id="theme-icon"></i>
+    </button>
+
+    <i class="bx bx-menu" id="menu-icon" aria-label="Toggle Menu"></i>
+
+    <nav class="navbar" id="navbar" role="navigation">
+      <a href="#home" class="active">Home</a>
+      <a href="#education">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#technologies">Technologies</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Home Section -->
+  <section class="home" id="home">
+    <!-- 3D Background Canvas -->
+    <canvas id="three-canvas" class="three-canvas"></canvas>
+
+    <div class="home-content left-side">
+      <h1>Hey, It' s <span>
+            <%= locals.personalInfo && (personalInfo.nickname || personalInfo.fullName) ? (personalInfo.nickname ||
+              personalInfo.fullName) : 'Your Name' %></span></h1>
+              <h3 class="text-animation">I'm a <span></span></h3>
+              <p>
+                <%= locals.summary && summary.introduction ? summary.introduction
+                  : "Aspiring developer with strong foundational skills. Passionate about building dynamic applications and eager to grow in a professional environment."
+                  %>
+              </p>
+              <div class="social-icons">
+                <% if (locals.personalInfo && personalInfo.github) { %>
+                  <a href="<%= personalInfo.github %>" target="_blank" rel="noopener noreferrer"
+                    aria-label="GitHub Profile"><i class="bx bxl-github"></i></a>
+                  <% } %>
+                    <% if (locals.personalInfo && personalInfo.linkedin) { %>
+                      <a href="<%= personalInfo.linkedin %>" target="_blank" rel="noopener noreferrer"
+                        aria-label="LinkedIn Profile"><i class="bx bxl-linkedin"></i></a>
+                      <% } %>
+                        <% if (locals.personalInfo && personalInfo.twitter) { %>
+                          <a href="<%= personalInfo.twitter %>" target="_blank" rel="noopener noreferrer"
+                            aria-label="Twitter Profile"><i class="bx bxl-twitter"></i></a>
+                          <% } %>
+                            <% if (!locals.personalInfo || (!personalInfo.github && !personalInfo.linkedin &&
+                              !personalInfo.twitter)) { %>
+                              <a href="#" aria-hidden="true"><i class="bx bxl-linkedin"></i></a>
+                              <a href="#" aria-hidden="true"><i class="bx bxl-github"></i></a>
+                              <a href="#" aria-hidden="true"><i class="bx bxl-twitter"></i></a>
+                              <% } %>
+              </div>
+              <div class="btn-group">
+                <% if (locals.personalInfo && personalInfo.resumeLink) { %>
+                  <a href="<%= personalInfo.resumeLink %>" target="_blank" download class="btn">Download Resume</a>
+                  <% } else { %>
+                    <a href="#" class="btn">Download Resume</a>
+                    <% } %>
+                      <a href="#contact" class="btn">Contact Me</a>
+              </div>
+    </div>
+    <div class="home-img right-side">
+      <% if (locals.personalInfo && personalInfo.profileImage) { %>
+        <img src="<%= personalInfo.profileImage %>"
+          alt="<%= locals.personalInfo && (personalInfo.nickname || personalInfo.fullName) ? (personalInfo.nickname || personalInfo.fullName) : 'Profile' %>"
+          loading="lazy" />
+        <% } %>
+    </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="education" id="education">
+      <h2 class="heading top-side">Education & Work Experience</h2>
+      <div class="timeline-items">
+        <% if (locals.education && education.length) { %>
+          <% education.forEach(function(e){ %>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date">
+                <%= e.yearStart %> - <%= e.yearEnd %>
+              </div>
+              <div class="timeline-content left-side">
+                <h3>
+                  <span>
+                    <%= e.degree %>
+                  </span>, <%= e.institution %>
+                </h3>
+                <% if (e.details) { %>
+                  <p>
+                    <%= e.details %>
+                  </p>
+                  <% } %>
+              </div>
+            </div>
+            <% }) %>
+              <% } %>
+
+                <% if (locals.workExperience && workExperience.length) { %>
+                  <% workExperience.forEach(function(w){ %>
+                    <div class="timeline-item">
+                      <div class="timeline-dot"></div>
+                      <div class="timeline-date">
+                        <%= w.duration %>
+                      </div>
+                      <div class="timeline-content right-side">
+                        <h3><span>
+                            <%= w.position %>
+                          </span>, <%= w.organization %>
+                        </h3>
+                        <% if (w.bulletPoints && w.bulletPoints.length) { %>
+                          <ul class="bullets-points">
+                            <% w.bulletPoints.forEach(function(point){ %>
+                              <li>
+                                <%= point %>
+                              </li>
+                              <% }) %>
+                          </ul>
+                          <% } else if (w.description) { %>
+                            <p>
+                              <%= w.description %>
+                            </p>
+                            <% } %>
+                      </div>
+                    </div>
+                    <% }) %>
+                      <% } %>
+
+                        <% if ((!locals.education || education.length===0) && (!locals.workExperience ||
+                          workExperience.length===0)) { %>
+                          <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2020 - 2024</div>
+                            <div class="timeline-content left-side">
+                              <h3><span>Bachelor of Science</span>, University Name</h3>
+                              <p>Sample education entry. Replace with your own experience.</p>
+                            </div>
+                          </div>
+                          <% } %>
+      </div>
+    </section>
+
+    <!-----------PROJECTS Section ------------------------------------->
+    <section class="projects" id="projects">
+      <h2 class="heading top-side">Projects</h2>
+      <div class="projects-container">
+        <% if (locals.projects && projects.length) { %>
+          <% projects.forEach(function(prj){ %>
+            <div class="project-box left-side portfolio-box">
+              <div class="portfolio-layer">
+                <div class="project-icon-header">
+                  <div class="project-icon">
+                    <i class="bx bx-code-alt"></i>
+                  </div>
+                  <h4>
+                    <%= prj.title %>
+                  </h4>
+                </div>
+                <p>
+                  <%= prj.description %>
+                </p>
+                <% if (prj.skills && prj.skills.length) { %>
+                  <div class="project-tech-stack">
+                    <% prj.skills.forEach(function(skill){ %>
+                      <span class="tech-badge">
+                        <%= skill %>
+                      </span>
+                      <% }) %>
+                  </div>
+                  <% } %>
+                    <div class="external-links">
+                      <% if (prj.repo) { %>
+                        <a href="<%= prj.repo %>" target="_blank" title="View Code">
+                          <i class="fa-solid fa-code"></i>
+                          <span>Code</span>
+                        </a>
+                        <% } %>
+                          <% if (prj.demo) { %>
+                            <a href="<%= prj.demo %>" target="_blank" title="Live Demo" class="demo-link">
+                              <i class="bx bx-link-external"></i>
+                              <span>Live Demo</span>
+                            </a>
+                            <% } %>
+                    </div>
+              </div>
+            </div>
+            <% }) %>
+              <% } else { %>
+                <div class="project-box left-side portfolio-box">
+                  <div class="portfolio-layer">
+                    <div class="project-icon-header">
+                      <div class="project-icon">
+                        <i class="bx bx-code-alt"></i>
+                      </div>
+                      <h4>Sample Project</h4>
+                    </div>
+                    <p>This is a sample project. Add your own projects to showcase your work!</p>
+                    <div class="project-tech-stack">
+                      <span class="tech-badge">React</span>
+                      <span class="tech-badge">Node.js</span>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
+      </div>
+    </section>
+
+    <!--------------------- Skills Section ------------------------------>
+    <section class="skills" id="skills">
+      <h2 class="heading top-side">Skills & <span>Expertise</span></h2>
+
+      <div class="skills-container">
+        <% if (locals.skills && skills.length) { %>
+          <% skills.forEach(function(category, catIndex){ %>
+            <div class="skill-category <%= catIndex % 2 === 0 ? 'left-side' : 'right-side' %>">
+              <h3 class="category-title">
+                <i
+                  class="<%= catIndex === 0 ? 'bx bx-code-alt' : catIndex === 1 ? 'bx bx-server' : 'bx bx-wrench' %>"></i>
+                <%= category.category || 'Skills' %>
+              </h3>
+              <div class="skills-grid">
+                <% if (category.items && category.items.length) { %>
+                  <% category.items.forEach(function(skill){ %>
+                    <div class="skill-item">
+                      <div class="skill-circle" data-percent="<%= skill.percentage || 75 %>">
+                        <svg>
+                          <circle cx="70" cy="70" r="60"></circle>
+                          <circle cx="70" cy="70" r="60" class="progress-circle"></circle>
+                        </svg>
+                        <div class="skill-percentage">
+                          <span class="percentage-value">0</span>%
+                        </div>
+                      </div>
+                      <h4>
+                        <%= skill.name %>
+                      </h4>
+                    </div>
+                    <% }) %>
+                      <% } %>
+              </div>
+            </div>
+            <% }) %>
+              <% } else { %>
+                <!-- Default skills if none provided -->
+                <div class="skill-category left-side">
+                  <h3 class="category-title">
+                    <i class="bx bx-code-alt"></i> Frontend Development
+                  </h3>
+                  <div class="skills-grid">
+                    <div class="skill-item">
+                      <div class="skill-circle" data-percent="90">
+                        <svg>
+                          <circle cx="70" cy="70" r="60"></circle>
+                          <circle cx="70" cy="70" r="60" class="progress-circle"></circle>
+                        </svg>
+                        <div class="skill-percentage">
+                          <span class="percentage-value">0</span>%
+                        </div>
+                      </div>
+                      <h4>React.js</h4>
+                    </div>
+                    <div class="skill-item">
+                      <div class="skill-circle" data-percent="85">
+                        <svg>
+                          <circle cx="70" cy="70" r="60"></circle>
+                          <circle cx="70" cy="70" r="60" class="progress-circle"></circle>
+                        </svg>
+                        <div class="skill-percentage">
+                          <span class="percentage-value">0</span>%
+                        </div>
+                      </div>
+                      <h4>JavaScript</h4>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
+      </div>
+    </section>
+
+    <!------------------------- Technologies Section ----------------------------------->
+    <section class="technologies" id="technologies">
+      <div class="technologies-box">
+        <h2 class="heading top-side">Technologies</h2>
+
+        <div class="wrapper">
+          <% if (locals.technologies && technologies.length) { %>
+            <% technologies.forEach(function(tech){ %>
+              <div class="tech-item bottom-side">
+                <% if (tech.image) { %>
+                  <img src="<%= tech.image %>" width="200px" alt="<%= tech.name %>" />
+                  <% } else { %>
+                    <i class="fa-solid fa-circle"></i>
+                    <% } %>
+                      <h2>
+                        <%= tech.name %>
+                      </h2>
+              </div>
+              <% }) %>
+                <% } else { %>
+                  <div class="tech-item bottom-side">
+                    <i class="fa-solid fa-circle"></i>
+                    <h2>HTML5</h2>
+                  </div>
+                  <div class="tech-item bottom-side">
+                    <i class="fa-solid fa-circle"></i>
+                    <h2>CSS3</h2>
+                  </div>
+                  <div class="tech-item bottom-side">
+                    <i class="fa-solid fa-circle"></i>
+                    <h2>JavaScript</h2>
+                  </div>
+                  <div class="tech-item bottom-side">
+                    <i class="fa-solid fa-circle"></i>
+                    <h2>React</h2>
+                  </div>
+                  <% } %>
+        </div>
+      </div>
+    </section>
+
+    <!--------------------- Testimonials Section ------------------------------>
+    <% if (locals.testimonials && testimonials.length) { %>
+      <section class="testimonials" id="testimonials">
+        <h2 class="heading top-side">What People <span>Say</span></h2>
+
+        <div class="testimonials-container">
+          <div class="testimonial-slider">
+            <div class="testimonial-track">
+              <% testimonials.forEach(function(test, index){ %>
+                <div class="testimonial-card <%= index === 0 ? 'active' : '' %>">
+                  <div class="quote-icon">
+                    <i class="bx bxs-quote-alt-left"></i>
+                  </div>
+                  <p class="testimonial-text">
+                    "<%= test.quote %>"
+                  </p>
+                  <div class="rating">
+                    <% for(let i=0; i < 5; i++) { %>
+                      <% if (i < Math.floor(test.rating || 5)) { %>
+                        <i class="bx bxs-star"></i>
+                        <% } else if (i < (test.rating || 5)) { %>
+                          <i class="bx bxs-star-half"></i>
+                          <% } else { %>
+                            <i class="bx bx-star"></i>
+                            <% } %>
+                              <% } %>
+                  </div>
+                  <div class="testimonial-author">
+                    <div class="author-avatar">
+                      <% if (test.avatar) { %>
+                        <img src="<%= test.avatar %>" alt="<%= test.name %>">
+                        <% } else { %>
+                          <img src="#" alt="<%= test.name %>"
+                            onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(test.name) %>&background=667eea&color=fff&size=80'">
+                          <% } %>
+                    </div>
+                    <div class="author-info">
+                      <h4>
+                        <%= test.name %>
+                      </h4>
+                      <p>
+                        <%= test.position || '' %>
+                          <% if (test.position && test.company) { %>, <% } %>
+                              <%= test.company || '' %>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+          </div>
+
+          <!-- Navigation Controls -->
+          <div class="testimonial-navigation">
+            <button class="testimonial-arrow prev" aria-label="Previous testimonial">
+              <i class="bx bx-chevron-left"></i>
+            </button>
+            <div class="testimonial-dots">
+              <% testimonials.forEach(function(test, index){ %>
+                <span class="dot <%= index === 0 ? 'active' : '' %>" data-slide="<%= index %>"></span>
+                <% }) %>
+            </div>
+            <button class="testimonial-arrow next" aria-label="Next testimonial">
+              <i class="bx bx-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+      <% } %>
+
+        <!--------------------- Contact Section ---------------------------->
+        <section class="contact" id="contact">
+          <h2 class="heading top-side">Contact <span>Me</span></h2>
+
+          <form name="contact" novalidate>
+            <div class="input-group left-side">
+              <div class="input-box">
+                <input type="text" placeholder="Full Name" id="fullName" name="Fullname"
+                  title="Please enter your full Name" required />
+              </div>
+              <div class="input-box">
+                <input type="email" title="Please enter your valid email" placeholder="Email" id="email" name="email"
+                  required />
+              </div>
+              <div class="input-box">
+                <input type="text" name="country_code" title="Please enter exactly 10 digits" placeholder="Phone Number"
+                  maxlength="10" id="phone" name="phone" required />
+              </div>
+              <div class="input-box">
+                <input type="text" placeholder="Subject" id="subject" name="subject" required />
+              </div>
+            </div>
+
+            <div class="input-group-2 right-side">
+              <textarea cols="30" rows="8" placeholder="Your Message" title="Please enter your message" id="message"
+                name="message" class="item" required></textarea>
+              <button type="submit" value="Send Message" class="btn">
+                Send Message
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!---------------------- Footer Section --------------------------->
+        <footer class="footer">
+          <div class="social top-side">
+            <% if (locals.personalInfo && personalInfo.linkedin) { %>
+              <a href="<%= personalInfo.linkedin %>" target="_blank"><i class="bx bxl-linkedin"></i></a>
+              <% } %>
+                <% if (locals.personalInfo && personalInfo.twitter) { %>
+                  <a href="<%= personalInfo.twitter %>" target="_blank"><i class="bx bxl-twitter"></i></a>
+                  <% } %>
+                    <% if (locals.personalInfo && personalInfo.github) { %>
+                      <a href="<%= personalInfo.github %>" target="_blank"><i class="bx bxl-github"></i></a>
+                      <% } %>
+          </div>
+
+          <ul class="list left-side">
+            <li><a href="#home">About me</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#technologies">Technologies</a></li>
+          </ul>
+          <p class="copyright right-side">
+            © <%= locals.personalInfo && personalInfo.fullName ? personalInfo.fullName : 'Portfolio Owner' %> | All
+              Rights
+              Reserved <%= new Date().getFullYear() %>
+          </p>
+        </footer>
+
+        <script src="https://smtpjs.com/v3/smtp.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+        <script>
+          // Enhanced Portfolio JavaScript with Modern Interactions
+
+          /* ==================== Scroll Header Enhancement ==================== */
+          const header = document.getElementById('header');
+          const menuIcon = document.getElementById('menu-icon');
+          const navbar = document.getElementById('navbar');
+
+          window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+              header.classList.add('scrolled');
+            } else {
+              header.classList.remove('scrolled');
+            }
+          });
+
+          /* ==================== Menu Toggle ==================== */
+          menuIcon.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            menuIcon.classList.toggle('bx-x');
+          });
+
+          // Close menu when clicking a menu item
+          document.querySelectorAll('.navbar a').forEach(link => {
+            link.addEventListener('click', () => {
+              navbar.classList.remove('active');
+              menuIcon.classList.remove('bx-x');
+            });
+          });
+
+          // Close menu when clicking outside
+          document.addEventListener('click', (e) => {
+            if (!navbar.contains(e.target) && !menuIcon.contains(e.target)) {
+              navbar.classList.remove('active');
+              menuIcon.classList.remove('bx-x');
+            }
+          });
+
+          /* ==================== Active Menu Highlighting ==================== */
+          const sections = document.querySelectorAll('section');
+          const navLinks = document.querySelectorAll('header nav a');
+
+          window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+              const sectionTop = section.offsetTop;
+              const sectionHeight = section.clientHeight;
+              if (window.scrollY >= sectionTop - 150) {
+                current = section.getAttribute('id');
+              }
+            });
+
+            navLinks.forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
+              }
+            });
+          });
+
+          /* ==================== Smooth Scroll ==================== */
+          document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+              e.preventDefault();
+              const target = document.querySelector(this.getAttribute('href'));
+              if (target) {
+                const offsetTop = target.offsetTop - 80;
+                window.scrollTo({
+                  top: offsetTop,
+                  behavior: 'smooth'
+                });
+              }
+            });
+          });
+
+          /* ==================== Typed.js Animation ==================== */
+          const typed = new Typed('.text-animation span', {
+            strings: [
+              'Frontend Developer',
+              'Backend Developer',
+              'MERN Stack Developer',
+              'Software Developer'
+            ],
+            typeSpeed: 80,
+            backSpeed: 60,
+            backDelay: 1500,
+            loop: true,
+            showCursor: true,
+            cursorChar: '|'
+          });
+
+          /* ==================== ✅ SKILLS PROGRESS ANIMATION (FIXED) ==================== */
+          // Animate skill circles on scroll
+          function animateSkills() {
+            const skillCircles = document.querySelectorAll('.skill-circle');
+
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  const circle = entry.target;
+                  const progressCircle = circle.querySelector('.progress-circle');
+                  const percentageValue = circle.querySelector('.percentage-value');
+                  const targetPercent = parseInt(circle.getAttribute('data-percent'));
+
+                  // Calculate stroke-dashoffset
+                  const circumference = 2 * Math.PI * 60; // r=60
+                  const offset = circumference - (targetPercent / 100) * circumference;
+
+                  // Set initial stroke-dash properties
+                  progressCircle.style.strokeDasharray = circumference;
+                  progressCircle.style.strokeDashoffset = circumference;
+
+                  // Animate the circle
+                  setTimeout(() => {
+                    progressCircle.style.transition = 'stroke-dashoffset 2s ease';
+                    progressCircle.style.strokeDashoffset = offset;
+                  }, 100);
+
+                  // Animate the percentage counter
+                  let currentPercent = 0;
+                  const duration = 2000; // 2 seconds
+                  const increment = targetPercent / (duration / 16); // ~60 fps
+
+                  const counter = setInterval(() => {
+                    currentPercent += increment;
+                    if (currentPercent >= targetPercent) {
+                      currentPercent = targetPercent;
+                      clearInterval(counter);
+                    }
+                    percentageValue.textContent = Math.floor(currentPercent);
+                  }, 16);
+
+                  // Unobserve after animation starts
+                  observer.unobserve(circle);
+                }
+              });
+            }, {
+              threshold: 0.5
+            });
+
+            skillCircles.forEach(circle => observer.observe(circle));
+          }
+
+          // Initialize skills animation on DOM load
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', animateSkills);
+          } else {
+            animateSkills();
+          }
+
+          /* ==================== ✅ CUSTOM CURSOR (FIXED) ==================== */
+          // Check if device supports custom cursor (not touch)
+          const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+
+          if (!isTouchDevice) {
+            // Create cursor elements
+            const cursor = document.createElement('div');
+            const cursorDot = document.createElement('div');
+
+            cursor.className = 'custom-cursor';
+            cursorDot.className = 'custom-cursor-dot';
+
+            document.body.appendChild(cursor);
+            document.body.appendChild(cursorDot);
+
+            // Cursor position
+            let mouseX = 0;
+            let mouseY = 0;
+            let cursorX = 0;
+            let cursorY = 0;
+            let dotX = 0;
+            let dotY = 0;
+
+            // Track mouse movement
+            document.addEventListener('mousemove', (e) => {
+              mouseX = e.clientX;
+              mouseY = e.clientY;
+            });
+
+            // Smooth cursor animation
+            function animateCursor() {
+              // Smooth follow with easing
+              cursorX += (mouseX - cursorX) * 0.1;
+              cursorY += (mouseY - cursorY) * 0.1;
+              dotX += (mouseX - dotX) * 0.3;
+              dotY += (mouseY - dotY) * 0.3;
+
+              cursor.style.left = `${cursorX}px`;
+              cursor.style.top = `${cursorY}px`;
+              cursorDot.style.left = `${dotX}px`;
+              cursorDot.style.top = `${dotY}px`;
+
+              requestAnimationFrame(animateCursor);
+            }
+
+            animateCursor();
+
+            // Cursor interactions
+            const interactiveElements = document.querySelectorAll('a, button, input, textarea, .portfolio-box, .tech-item, .skill-item, .project-box');
+
+            interactiveElements.forEach(el => {
+              el.addEventListener('mouseenter', () => {
+                cursor.classList.add('cursor-hover');
+                cursorDot.classList.add('cursor-hover');
+              });
+
+              el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('cursor-hover');
+                cursorDot.classList.remove('cursor-hover');
+              });
+            });
+
+            // Hide custom cursor when mouse leaves window
+            document.addEventListener('mouseleave', () => {
+              cursor.style.opacity = '0';
+              cursorDot.style.opacity = '0';
+            });
+
+            document.addEventListener('mouseenter', () => {
+              cursor.style.opacity = '1';
+              cursorDot.style.opacity = '1';
+            });
+          }
+
+          /* ==================== Form Validation & Submission ==================== */
+          const form = document.querySelector('form');
+
+          // Input elements
+          const fullNameInput = document.getElementById('fullName');
+          const emailInput = document.getElementById('email');
+          const phoneInput = document.getElementById('phone');
+          const subjectInput = document.getElementById('subject');
+          const messageInput = document.getElementById('message');
+
+          // Validation functions
+          function validateName() {
+            const name = fullNameInput.value.trim();
+            return name.length >= 2 && /^[a-zA-Z\s-]+$/.test(name);
+          }
+
+          function validateEmail() {
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+          }
+
+          function validatePhone() {
+            const phone = phoneInput.value.trim();
+            const phoneRegex = /^[0-9]{10}$/;
+            return phoneRegex.test(phone);
+          }
+
+          function validateSubject() {
+            return subjectInput.value.trim().length >= 3;
+          }
+
+          function validateMessage() {
+            return messageInput.value.trim().length >= 10;
+          }
+
+          // Real-time validation feedback
+          function addValidationFeedback(input, isValid) {
+            if (isValid) {
+              input.style.borderColor = 'rgba(34, 197, 94, 0.5)';
+            } else if (input.value.length > 0) {
+              input.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+            } else {
+              input.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }
+          }
+
+          fullNameInput.addEventListener('blur', () => {
+            addValidationFeedback(fullNameInput, validateName());
+          });
+
+          emailInput.addEventListener('blur', () => {
+            addValidationFeedback(emailInput, validateEmail());
+          });
+
+          phoneInput.addEventListener('blur', () => {
+            addValidationFeedback(phoneInput, validatePhone());
+          });
+
+          subjectInput.addEventListener('blur', () => {
+            addValidationFeedback(subjectInput, validateSubject());
+          });
+
+          messageInput.addEventListener('blur', () => {
+            addValidationFeedback(messageInput, validateMessage());
+          });
+
+          // Toast notification function
+          function showToast(message, type = 'success') {
+            const backgroundColor = type === 'success'
+              ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+              : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+
+            Toastify({
+              text: message,
+              duration: 3000,
+              close: true,
+              gravity: 'top',
+              position: 'center',
+              stopOnFocus: true,
+              style: {
+                background: backgroundColor,
+                fontSize: '1.6rem',
+                borderRadius: '1rem',
+                padding: '1.5rem 2.5rem',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+              }
+            }).showToast();
+          }
+
+          // Email sending function
+          function sendEmail() {
+            const fullName = fullNameInput.value.trim();
+            const email = emailInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const subject = subjectInput.value.trim();
+            const message = messageInput.value.trim();
+
+            const emailBody = `
+            <div style="font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;">
+            <div style="background: white; padding: 30px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 10px;">
+                New Contact Form Submission
+                </h2>
+                <p style="margin: 20px 0;"><strong>Full Name:</strong> ${fullName}</p>
+                <p style="margin: 20px 0;"><strong>Email:</strong> ${email}</p>
+                <p style="margin: 20px 0;"><strong>Phone:</strong> ${phone}</p>
+                <p style="margin: 20px 0;"><strong>Subject:</strong> ${subject}</p>
+                <p style="margin: 20px 0;"><strong>Message:</strong></p>
+                <p style="background: #f9f9f9; padding: 15px; border-left: 4px solid #667eea; margin: 10px 0;">
+                ${message}
+                </p>
+            </div>
+            </div>
+            `;
+
+            Email.send({
+              SecureToken: "40b0323c-46a8-4596-a89b-ac42652648b8",
+              To: "kumawatking6848@gmail.com",
+              From: "kumawatking6848@gmail.com",
+              Subject: `Portfolio Contact: ${subject}`,
+              Body: emailBody
+            }).then(response => {
+              if (response === 'OK') {
+                showToast('✨ Message sent successfully! I\'ll get back to you soon.', 'success');
+
+                // Reset form with animation
+                setTimeout(() => {
+                  form.reset();
+                  // Reset border colors
+                  [fullNameInput, emailInput, phoneInput, subjectInput, messageInput].forEach(input => {
+                    input.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                  });
+                }, 1000);
+              } else {
+                showToast('⚠️ Failed to send message. Please try again.', 'error');
+              }
+            }).catch(error => {
+              console.error('Email error:', error);
+              showToast('⚠️ An error occurred. Please try again later.', 'error');
+            });
+          }
+
+          // Form submission handler
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Validate all fields
+            if (!validateName()) {
+              showToast('⚠️ Please enter a valid full name (letters only)', 'error');
+              fullNameInput.focus();
+              return;
+            }
+
+            if (!validateEmail()) {
+              showToast('⚠️ Please enter a valid email address', 'error');
+              emailInput.focus();
+              return;
+            }
+
+            if (!validatePhone()) {
+              showToast('⚠️ Please enter a valid 10-digit phone number', 'error');
+              phoneInput.focus();
+              return;
+            }
+
+            if (!validateSubject()) {
+              showToast('⚠️ Please enter a subject (minimum 3 characters)', 'error');
+              subjectInput.focus();
+              return;
+            }
+
+            if (!validateMessage()) {
+              showToast('⚠️ Please enter a message (minimum 10 characters)', 'error');
+              messageInput.focus();
+              return;
+            }
+
+            // All validations passed, send email
+            sendEmail();
+          });
+
+          /* ==================== Loading Animation ==================== */
+          // ✅ FIXED: Added percentage counter and maximum timeout failsafe
+          const loader = document.getElementById('loader');
+          const loaderCount = document.getElementById('loader-count');
+
+          // Animate percentage counter from 0 to 100
+          let currentPercent = 0;
+          const percentInterval = setInterval(() => {
+            if (currentPercent < 100) {
+              currentPercent += Math.random() * 15; // Random increment for realistic feel
+              if (currentPercent > 100) currentPercent = 100;
+              if (loaderCount) {
+                loaderCount.textContent = Math.floor(currentPercent);
+              }
+            } else {
+              clearInterval(percentInterval);
+            }
+          }, 100);
+
+          // Function to hide loader
+          function hideLoader() {
+            if (loader && !loader.classList.contains('fade-out')) {
+              // Ensure counter reaches 100%
+              if (loaderCount) loaderCount.textContent = '100';
+
+              setTimeout(() => {
+                loader.classList.add('fade-out');
+                setTimeout(() => {
+                  loader.style.display = 'none';
+                  loader.remove();
+                  document.body.style.overflow = 'auto';
+                  clearInterval(percentInterval); // Clean up interval
+                }, 500);
+              }, 300);
+            }
+          }
+
+          // Hide loader on window load
+          window.addEventListener('load', () => {
+            hideLoader();
+
+            // Fade in body content
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+              document.body.style.transition = 'opacity 0.5s ease';
+              document.body.style.opacity = '1';
+            }, 100);
+          });
+
+          // ✅ CRITICAL FIX: Maximum timeout failsafe (5 seconds)
+          // This ensures the loader ALWAYS disappears, even if 'load' event doesn't fire
+          setTimeout(() => {
+            hideLoader();
+          }, 5000); // Maximum 5 seconds loading time
+
+          /* ==================== Console Message ==================== */
+          console.log(
+            '%c🚀 Welcome to the Portfolio! ',
+            'color: #667eea; font-size: 20px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'
+          );
+
+          /* ==================== Parallax Effect for Background ==================== */
+          window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const parallaxElements = document.querySelectorAll('.home-img img');
+
+            parallaxElements.forEach(element => {
+              const speed = 0.5;
+              element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+          });
+
+          /* ==================== Theme Toggle (Dark/Light Mode) ==================== */
+          const themeToggle = document.getElementById('theme-toggle');
+          const themeIcon = document.getElementById('theme-icon');
+
+          // Check for saved theme preference or default to 'dark'
+          const currentTheme = localStorage.getItem('theme') || 'dark';
+          document.documentElement.setAttribute('data-theme', currentTheme);
+
+          // Update icon based on current theme
+          updateThemeIcon(currentTheme);
+
+          themeToggle.addEventListener('click', () => {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const newTheme = theme === 'dark' ? 'light' : 'dark';
+
+            // Add transition class
+            document.documentElement.classList.add('theme-transitioning');
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+
+            // Remove transition class after transition completes
+            setTimeout(() => {
+              document.documentElement.classList.remove('theme-transitioning');
+            }, 300);
+          });
+
+          function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+              themeIcon.classList.remove('bx-sun');
+              themeIcon.classList.add('bx-moon');
+            } else {
+              themeIcon.classList.remove('bx-moon');
+              themeIcon.classList.add('bx-sun');
+            }
+          }
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,243 @@
+.about-page {
+  /* Background handled by global body style in App.css */
+  min-height: 100vh;
+  padding-top: 60px;
+}
+
+/* Hero Section */
+.about-hero {
+  text-align: center;
+  /* Warm orange gradient mesh */
+  background: radial-gradient(circle at 10% 20%, rgba(255, 79, 0, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 40%);
+  color: var(--text-main);
+  padding: 100px 20px 80px;
+  margin-bottom: 50px;
+}
+
+.about-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.about-hero p {
+  font-size: 1.25rem;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+/* Main Container */
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+/* Mission, Vision, Values */
+.about-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 80px;
+}
+
+.about-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 40px 30px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.about-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(255, 79, 0, 0.08);
+  border-color: rgba(255, 79, 0, 0.2);
+}
+
+.about-card h2 {
+  font-size: 1.75rem;
+  margin-bottom: 20px;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.about-card p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Features Section */
+.about-features {
+  background: #fff;
+  padding: 60px;
+  border-radius: 32px;
+  margin-bottom: 80px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-features::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: var(--primary-gradient);
+}
+
+.about-features h2 {
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+}
+
+.feature-item {
+  background: #fff9f5;
+  padding: 20px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-orange);
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.feature-item:hover {
+  background: white;
+  border-color: var(--primary-orange);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(255, 79, 0, 0.1);
+}
+
+/* Process Section */
+.about-process {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.about-process h2 {
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.process-card {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.process-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  border-color: rgba(255, 79, 0, 0.2);
+}
+
+/* Number badge for process */
+.process-card::before {
+  content: attr(data-step);
+  /* You'd need to add data-step="1" etc in JSX or just style normally */
+  /* Since I can't easily change JSX everywhere right now without checking, I'll assume standard styling */
+}
+
+.process-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+.process-card p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* CTA Section */
+.about-cta {
+  text-align: center;
+  background: var(--primary-gradient);
+  color: white;
+  padding: 80px 20px;
+  border-radius: 32px;
+  margin-bottom: 40px;
+  box-shadow: 0 20px 50px rgba(255, 79, 0, 0.3);
+}
+
+.about-cta h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: 800;
+}
+
+.about-cta p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  opacity: 0.95;
+}
+
+.cta-btn {
+  background: white !important;
+  color: var(--primary-orange) !important;
+  border: none !important;
+  padding: 16px 36px !important;
+  font-size: 1.1rem !important;
+  font-weight: 800 !important;
+  border-radius: 50px !important;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cta-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .about-hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .about-hero p {
+    font-size: 1.1rem;
+  }
+
+  .about-cta h2 {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template 2 Spinner Test</title>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* Loader Styles */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .loader-spinner {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+        }
+
+        .spinner-ring:nth-child(1) {
+            border-top-color: #667eea;
+            animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            width: 180px;
+            height: 180px;
+        }
+
+        .spinner-ring:nth-child(2) {
+            border-right-color: #00f2fe;
+            animation: spin 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse;
+            width: 140px;
+            height: 140px;
+        }
+
+        .spinner-ring:nth-child(3) {
+            border-bottom-color: #f093fb;
+            animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            width: 100px;
+            height: 100px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-logo-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 40px rgba(102, 126, 234, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .logo-initials {
+            font-size: 3rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 40px rgba(102, 126, 234, 0.3);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 60px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        .loader-percentage {
+            font-size: 4rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .loader-text {
+            font-size: 2rem;
+            color: #b4b4c6;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .status {
+            font-size: 1.5rem;
+            color: #4facfe;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loader" class="loader">
+        <div class="loader-content">
+            <!-- Animated Spinner -->
+            <div class="loader-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="loader-logo-center">
+                    <span class="logo-initials">SK</span>
+                </div>
+            </div>
+
+            <!-- Percentage Counter -->
+            <div class="loader-percentage">
+                <span id="loader-count">0</span>%
+            </div>
+
+            <!-- Loading Text -->
+            <p class="loader-text">Loading Portfolio...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>✅ Spinner Fix Test</h1>
+        <p>If you can see this content, the spinner has been successfully hidden!</p>
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        // ✅ FIXED: Added percentage counter and maximum timeout failsafe
+        const loader = document.getElementById('loader');
+        const loaderCount = document.getElementById('loader-count');
+        const status = document.getElementById('status');
+
+        // Track when things happen
+        let loadEventFired = false;
+        let timeoutFired = false;
+
+        // Animate percentage counter from 0 to 100
+        let currentPercent = 0;
+        const percentInterval = setInterval(() => {
+            if (currentPercent < 100) {
+                currentPercent += Math.random() * 15; // Random increment for realistic feel
+                if (currentPercent > 100) currentPercent = 100;
+                if (loaderCount) {
+                    loaderCount.textContent = Math.floor(currentPercent);
+                }
+            } else {
+                clearInterval(percentInterval);
+            }
+        }, 100);
+
+        // Function to hide loader
+        function hideLoader(trigger) {
+            if (loader && !loader.classList.contains('fade-out')) {
+                // Ensure counter reaches 100%
+                if (loaderCount) loaderCount.textContent = '100';
+
+                setTimeout(() => {
+                    loader.classList.add('fade-out');
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        loader.remove();
+                        document.body.style.overflow = 'auto';
+                        clearInterval(percentInterval); // Clean up interval
+
+                        // Show what triggered the hide
+                        status.textContent = `Loader hidden by: ${trigger}`;
+                    }, 500);
+                }, 300);
+            }
+        }
+
+        // Hide loader on window load
+        window.addEventListener('load', () => {
+            loadEventFired = true;
+            hideLoader('window.load event');
+        });
+
+        // ✅ CRITICAL FIX: Maximum timeout failsafe (5 seconds)
+        // This ensures the loader ALWAYS disappears, even if 'load' event doesn't fire
+        setTimeout(() => {
+            timeoutFired = true;
+            if (!loadEventFired) {
+                hideLoader('5-second timeout failsafe');
+            }
+        }, 5000); // Maximum 5 seconds loading time
+
+        // Simulate slow loading (remove this in production)
+        console.log('Testing spinner with various scenarios...');
+    </script>
+</body>
+
+</html>

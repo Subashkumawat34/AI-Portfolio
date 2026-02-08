@@ -1,0 +1,6 @@
+{
+  "watch": ["."],
+  "ignore": ["temp-repos/*", "generated-sites/*", "node_modules/*"],
+  "ext": "js,json",
+  "exec": "node index.js"
+}
