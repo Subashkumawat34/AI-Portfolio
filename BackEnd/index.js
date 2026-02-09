@@ -6,7 +6,7 @@ const cors = require("cors");
 
 // ✅ Check if required environment variables exist
 const requiredEnvVars = [
-  "MONGO_CONN", // MongoDB connection string
+  "MONGODB_URI", // MongoDB connection string
   "JWT_SECRET", // JWT secret for auth
   "GITHUB_USERNAME", // For repo creation
   "GITHUB_TOKEN", // GitHub Personal Access Token
