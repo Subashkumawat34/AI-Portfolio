@@ -144,8 +144,12 @@
       <% if (locals.personalInfo && personalInfo.profileImage) { %>
         <img src="<%= personalInfo.profileImage %>"
           alt="<%= locals.personalInfo && (personalInfo.nickname || personalInfo.fullName) ? (personalInfo.nickname || personalInfo.fullName) : 'Profile' %>"
-          loading="lazy" />
-        <% } %>
+          loading="lazy"
+          onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(personalInfo.fullName || 'User') %>&size=400&background=667eea&color=fff&bold=true'" />
+      <% } else if (locals.personalInfo && personalInfo.fullName) { %>
+        <img src="https://ui-avatars.com/api/?name=<%= encodeURIComponent(personalInfo.fullName) %>&size=400&background=667eea&color=fff&bold=true"
+          alt="<%= personalInfo.fullName %>" loading="lazy" />
+      <% } %>
     </div>
     </section>
 
@@ -367,13 +371,15 @@
             <% technologies.forEach(function(tech){ %>
               <div class="tech-item bottom-side">
                 <% if (tech.image) { %>
-                  <img src="<%= tech.image %>" width="200px" alt="<%= tech.name %>" />
-                  <% } else { %>
-                    <i class="fa-solid fa-circle"></i>
-                    <% } %>
-                      <h2>
-                        <%= tech.name %>
-                      </h2>
+                  <img src="<%= tech.image %>" width="200px" alt="<%= tech.name %>"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                  <i class="fa-solid fa-code" style="display:none; font-size: 3rem; color: #667eea;"></i>
+                <% } else { %>
+                  <i class="fa-solid fa-code" style="font-size: 3rem; color: #667eea;"></i>
+                <% } %>
+                <h2>
+                  <%= tech.name %>
+                </h2>
               </div>
               <% }) %>
                 <% } else { %>

@@ -23,6 +23,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "./pages/Footer";
 import GenerateWebsite from "./pages/GenerateWebsite";
+import SuccessPage from "./pages/SuccessPage";
 import AIContentGeneration from "./pages/features/AIContentGeneration";
 import OneClickDeploy from "./pages/features/OneClickDeploy";
 
@@ -194,6 +195,14 @@ function App() {
             element={
               <ProtectedRoute isAuthenticated={authState.isAuthenticated}>
                 <AccountSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/success"
+            element={
+              <ProtectedRoute isAuthenticated={authState.isAuthenticated}>
+                <SuccessPage />
               </ProtectedRoute>
             }
           />

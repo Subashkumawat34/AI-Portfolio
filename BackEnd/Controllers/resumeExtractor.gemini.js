@@ -4,21 +4,26 @@ const pdfParse = require("pdf-parse");
 const mammoth = require("mammoth");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Initialize Gemini AI for text extraction
+// Initialize Gemini AI
 const apiKey = process.env.GEMINI_API_KEY_EXTRACT ? process.env.GEMINI_API_KEY_EXTRACT.trim() : "";
-console.log(`📄 New Resume Extractor initialized with Key: ${apiKey.substring(0, 10)}...`);
+console.log(`📄 Gemini Extractor initialized. Key present: ${!!apiKey}`);
+
 const genAI = new GoogleGenerativeAI(apiKey);
 
-// Model configuration
-const EXTRACTOR_MODEL = process.env.EXTRACTOR_MODEL || 'gemini-2.0-flash';
+// Model configuration with fallback priority (ALL FREE TIER MODELS)
+// Updated based on actual model availability - avoiding 404 errors
+const MODEL_PRIORITY = [
+    process.env.EXTRACTOR_MODEL || 'gemini-2.0-flash',  // Primary: User preference or latest
+    'gemini-pro',             // Fallback 1: Stable legacy model (reliable)
+    'gemini-2.5-flash',       // Fallback 2: Latest flash model (limited free tier: 20 req/day)
+];
 
-// Constants for error handling
-const API_TIMEOUT = 45000; // 45 seconds for document processing
-const MAX_RETRIES = 2;
+// Constants
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const API_TIMEOUT = 30000; // 30 seconds
 
 /**
- * Helper: Extract text from PDF or DOCX files
+ * Helper: Extract text from PDF, DOCX, or TXT files
  */
 async function extractTextFromFile(filePath, mimetype) {
     const ext = path.extname(filePath).toLowerCase();
@@ -31,194 +36,147 @@ async function extractTextFromFile(filePath, mimetype) {
         const result = await mammoth.extractRawText({ path: filePath });
         return result.value || "";
     } else {
-        // Fallback: try reading as text
+        // Fallback for .txt or other text-based files
+        // This fixes the "Could not read file text" error in debug scripts
         return fs.readFileSync(filePath, "utf8");
     }
 }
 
 /**
- * Estimate token count (rough approximation)
- */
-function estimateTokens(text) {
-    return Math.ceil(text.length / 4);
-}
-
-/**
- * Build structured prompt for Gemini to extract portfolio data
+ * Build structured prompt
  */
 function buildExtractionPrompt(resumeText) {
-    return `You are an AI assistant specialized in extracting structured data from resumes and CVs.
-
-CRITICAL INSTRUCTIONS:
-1. You MUST respond with ONLY valid JSON - no explanations, no markdown, no commentary
-2. Extract ALL available information from the resume
-3. If a field is not found, use empty string "" or empty array []
-4. For arrays, extract ALL items found, not just a few
-5. Maintain exact formatting and preserve all details
+    return `You are an AI assistant specialized in extracting structured data from resumes.
+CRITICAL: Respond with ONLY valid JSON. No markdown, no explanations.
 
 REQUIRED JSON STRUCTURE:
 {
-  "personalInfo": {
-    "fullName": "",
-    "location": "",
-    "phone": "",
-    "email": "",
-    "github": "",
-    "linkedin": "",
-    "website": ""
-  },
-  "summary": {
-    "headline": "",
-    "careerObjective": ""
-  },
-  "skills": {
-    "languages": [],
-    "frameworks": [],
-    "tools": [],
-    "problemSolving": [],
-    "concepts": []
-  },
-  "education": [
-    {
-      "degree": "",
-      "institution": "",
-      "year": "",
-      "grade": ""
-    }
-  ],
-  "experience": [
-    {
-      "title": "",
-      "organization": "",
-      "duration": "",
-      "location": "",
-      "description": ""
-    }
-  ],
-  "projects": [
-    {
-      "title": "",
-      "date": "",
-      "description": ""
-    }
-  ],
-  "certifications": [
-    {
-      "title": "",
-      "date": "",
-      "description": ""
-    }
-  ]
+  "personalInfo": { "fullName": "", "location": "", "phone": "", "email": "", "github": "", "linkedin": "", "website": "" },
+  "summary": { "headline": "", "careerObjective": "" },
+  "skills": { "languages": [], "frameworks": [], "tools": [], "problemSolving": [], "concepts": [] },
+  "education": [{ "degree": "", "institution": "", "year": "", "grade": "" }],
+  "experience": [{ "title": "", "organization": "", "duration": "", "location": "", "description": "" }],
+  "projects": [{ "title": "", "date": "", "description": "" }],
+  "certifications": [{ "title": "", "date": "", "description": "" }]
 }
 
 RESUME CONTENT:
 ${resumeText.replace(/\n+/g, " ").substring(0, 50000)}
-
-Remember: Output ONLY the JSON object, nothing else.`;
+`;
 }
 
 /**
- * Parse resume with Gemini API using retry logic
- */
-// Model Priority List for Fallback (ALL FREE TIER MODELS)
-const MODEL_PRIORITY = [
-    process.env.EXTRACTOR_MODEL || 'gemini-2.5-flash',  // Primary: Latest stable version
-    'gemini-2.5-flash-lite',  // Fallback 1: Lite version (most reliable for free tier)
-    'gemini-2.0-flash',       // Fallback 2: Previous version (watch for rate limits)
-];
-
-/**
- * Parse resume with Gemini API using model fallback logic
+ * Parse resume with Gemini - with MODEL FALLBACK
  */
 async function parseWithGemini(resumeText) {
-    const prompt = buildExtractionPrompt(resumeText);
-    let lastError;
+    // TRUNCATE TEXT TO AVOID QUOTA ISSUES
+    const truncatedText = resumeText.substring(0, 20000);
+    if (resumeText.length > 20000) {
+        console.log(`✂️ Truncated text from ${resumeText.length} to 20000 characters`);
+    }
 
-    // Iterate through models in priority order
-    for (const modelName of MODEL_PRIORITY) {
-        console.log(`🤖 Attempting generation with model: ${modelName}`);
+    let lastError = null;
 
-        // Retry logic per model (optional, but keep it simple for now: 1 attempt per model is usually better for rate limits)
+    // Loop through models with fallback logic
+    for (let i = 0; i < MODEL_PRIORITY.length; i++) {
+        const modelName = MODEL_PRIORITY[i];
+
         try {
+            console.log(`🤖 Attempting extraction with model: ${modelName} (Attempt ${i + 1}/${MODEL_PRIORITY.length})`);
+
             // Create timeout promise
             const timeoutPromise = new Promise((_, reject) => {
                 setTimeout(() => reject(new Error("API_TIMEOUT")), API_TIMEOUT);
             });
 
+            // Create API call promise
             const apiCallPromise = (async () => {
                 const model = genAI.getGenerativeModel({
                     model: modelName,
-                    generationConfig: {
-                        temperature: 0.1,
-                        topK: 1,
-                        topP: 1,
-                    }
+                    generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
                 });
 
+                const prompt = buildExtractionPrompt(truncatedText);
                 const result = await model.generateContent(prompt);
                 const response = await result.response;
                 return response.text();
             })();
 
-            const content = await Promise.race([apiCallPromise, timeoutPromise]);
+            // Race between timeout and API call
+            const text = await Promise.race([apiCallPromise, timeoutPromise]);
 
-            if (!content || typeof content !== 'string') {
-                throw new Error("Empty or invalid response from Gemini API");
-            }
-
-            const jsonMatch = content.match(/\{[\s\S]*\}/);
-            const jsonText = jsonMatch ? jsonMatch[0] : content;
+            // Clean up markdown if present
+            const jsonText = text.replace(/```json|```/g, "").trim();
             const parsed = JSON.parse(jsonText);
 
-            if (!parsed || typeof parsed !== 'object') {
-                throw new Error("Invalid JSON structure");
-            }
-
-            console.log(`✅ Success with model: ${modelName}`);
+            // If we get here, it succeeded
+            console.log(`✅ Extraction successful with model: ${modelName}`);
             return parsed;
 
-        } catch (error) {
-            console.warn(`⚠️ Failed with ${modelName}: ${error.message}`);
-            lastError = error;
+        } catch (attemptError) {
+            lastError = attemptError;
+            const errorMessage = attemptError.message || String(attemptError);
 
-            // If rate limited (429), strictly convert to Next Model immediately
-            if (error.message.includes("429") || error.message.includes("quota")) {
-                console.log("📉 Quota exceeded, switching to fallback model...");
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Brief pause
-                continue;
+            // Categorize the error
+            const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("429");
+            const isRateLimit = errorMessage.includes("rate limit");
+            const isNotFound = errorMessage.includes("404") || errorMessage.includes("not found");
+            const isTimeout = errorMessage.includes("timeout") || errorMessage === "API_TIMEOUT";
+            const isNetwork = errorMessage.includes("fetch failed") || errorMessage.includes("ECONNREFUSED");
+
+            // Log the specific error type
+            if (isQuotaError) {
+                console.warn(`⚠️ Model ${modelName} quota exceeded`);
+            } else if (isRateLimit) {
+                console.warn(`⚠️ Model ${modelName} rate limit hit`);
+            } else if (isNotFound) {
+                console.warn(`⚠️ Model ${modelName} not found`);
+            } else if (isTimeout) {
+                console.warn(`⏱️ Model ${modelName} timed out after ${API_TIMEOUT}ms`);
+            } else if (isNetwork) {
+                console.warn(`🌐 Network error with model ${modelName}`);
+            } else {
+                console.warn(`⚠️ Model ${modelName} failed:`, errorMessage.substring(0, 100));
             }
-            // For other errors, also continue to next model
+
+            // Check if this was the last model in the list
+            if (i === MODEL_PRIORITY.length - 1) {
+                console.error("❌ All models failed. Returning mock data.");
+                throw lastError; // Throw the last error to be caught in main handler
+            }
+
+            // Optional: Add a small delay before switching models (helps with rate limits)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log("🔄 Switching to fallback model...");
         }
     }
 
-    throw lastError || new Error("All models failed to extract resume data");
+    // This should never be reached, but just in case
+    throw lastError || new Error("All models exhausted");
 }
 
 /**
- * Validate and sanitize extracted data
+ * Mock Fallback Data (Safe Mode)
+ */
+function getMockData() {
+    return {
+        personalInfo: { fullName: "", email: "", phone: "", location: "" },
+        summary: { headline: "Error extracting data", careerObjective: "Please enter details manually." },
+        skills: { languages: [], frameworks: [], tools: [] },
+        education: [],
+        experience: [],
+        projects: []
+    };
+}
+
+/**
+ * Sanitize Data
  */
 function sanitizeExtractedData(parsed) {
     return {
-        personalInfo: parsed.personalInfo || {
-            fullName: "",
-            location: "",
-            phone: "",
-            email: "",
-            github: "",
-            linkedin: "",
-            website: "",
-        },
-        summary: parsed.summary || {
-            headline: "",
-            careerObjective: ""
-        },
-        skills: parsed.skills || {
-            languages: [],
-            frameworks: [],
-            tools: [],
-            problemSolving: [],
-            concepts: [],
-        },
+        personalInfo: parsed.personalInfo || {},
+        summary: parsed.summary || {},
+        skills: parsed.skills || { languages: [], frameworks: [], tools: [] },
         education: Array.isArray(parsed.education) ? parsed.education : [],
         experience: Array.isArray(parsed.experience) ? parsed.experience : [],
         projects: Array.isArray(parsed.projects) ? parsed.projects : [],
@@ -227,182 +185,106 @@ function sanitizeExtractedData(parsed) {
 }
 
 /**
- * Main extraction endpoint
- * @route POST /api/resume/extract
+ * Main Controller
  */
 exports.extractResume = async (req, res) => {
-    const startTime = Date.now();
-
     try {
-        // ========== FILE VALIDATION ==========
-
-        if (!req.file) {
-            console.warn("⚠️ No file uploaded");
-            return res.status(400).json({
-                success: false,
-                error: "No file uploaded",
-                code: "MISSING_FILE"
-            });
-        }
+        if (!req.file) return res.status(400).json({ success: false, error: "No file uploaded" });
 
         const filePath = req.file.path;
-        const fileSize = req.file.size;
-        const mimetype = req.file.mimetype;
+        console.log(`📄 Processing: ${req.file.originalname}`);
 
-        console.log(`📄 Processing file: ${req.file.originalname} (${(fileSize / 1024).toFixed(2)} KB)`);
-
-        // Check file size
-        if (fileSize > MAX_FILE_SIZE) {
-            return res.status(400).json({
-                success: false,
-                error: `File too large. Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
-                code: "FILE_TOO_LARGE"
-            });
-        }
-
-        // Check file type
-        const allowedTypes = [
-            'application/pdf',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/msword',
-            'text/plain'
-        ];
-
-        if (!allowedTypes.includes(mimetype)) {
-            return res.status(400).json({
-                success: false,
-                error: "Invalid file type. Please upload PDF, DOCX, or TXT files only",
-                code: "INVALID_FILE_TYPE"
-            });
-        }
-
-        // ========== API KEY CHECK ==========
-
-        if (!process.env.GEMINI_API_KEY_EXTRACT) {
-            console.error("❌ GEMINI_API_KEY_EXTRACT is not configured!");
-            return res.status(500).json({
-                success: false,
-                error: "Extraction service is not properly configured. Please contact administrator.",
-                code: "API_KEY_MISSING"
-            });
-        }
-
-        // ========== TEXT EXTRACTION ==========
-
-        let rawText;
+        // 1. Extract Text
+        let rawText = "";
         try {
-            rawText = await extractTextFromFile(filePath, mimetype);
-        } catch (extractError) {
-            console.error("❌ Text extraction error:", extractError.message);
-            return res.status(400).json({
-                success: false,
-                error: "Could not extract text from file. Please ensure the file is not corrupted.",
-                code: "TEXT_EXTRACTION_FAILED",
-                details: extractError.message
-            });
+            rawText = await extractTextFromFile(filePath, req.file.mimetype);
+        } catch (e) {
+            console.error("Text extraction failed:", e);
+            return res.json({ success: false, error: "Could not read file text", data: getMockData() });
         }
 
-        // Validate extracted text
-        if (!rawText || rawText.trim().length < 20) {
-            console.warn("⚠️ Extracted text too short or empty");
-            return res.status(400).json({
-                success: false,
-                error: "Could not extract sufficient text from file. The file may be empty or corrupted.",
-                code: "INSUFFICIENT_TEXT"
-            });
+        if (!rawText || rawText.length < 50) {
+            return res.json({ success: false, error: "File content too short", data: getMockData() });
         }
 
-        console.log(`📝 Extracted ${rawText.length} characters (≈${estimateTokens(rawText)} tokens)`);
-
-        // ========== AI PARSING ==========
-
-        let parsed;
+        // 2. Parse with AI (with automatic model fallback)
+        let parsedData = {};
         try {
-            parsed = await parseWithGemini(rawText);
-        } catch (parseError) {
-            console.error("❌ AI parsing error:", parseError.message);
+            parsedData = await parseWithGemini(rawText);
+            console.log("✅ AI Extraction Successful");
+        } catch (aiError) {
+            const errorMessage = aiError.message || String(aiError);
 
-            // Specific error handling
-            if (parseError.message === "API_TIMEOUT") {
-                return res.status(504).json({
-                    success: false,
-                    error: "Processing took too long. Please try with a smaller file.",
-                    code: "TIMEOUT_ERROR"
-                });
+            // ========== ERROR CATEGORIZATION ==========
+
+            // Categorize error types
+            const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("429");
+            const isRateLimit = errorMessage.includes("rate limit");
+            const isApiKeyError = errorMessage.includes("API key") || errorMessage.includes("401") || errorMessage.includes("unauthorized");
+            const isNetworkError = errorMessage.includes("fetch failed") || errorMessage.includes("ECONNREFUSED") || errorMessage.includes("network");
+            const isTimeout = errorMessage.includes("timeout") || errorMessage === "API_TIMEOUT";
+
+            // Log specific error type
+            if (isQuotaError) {
+                console.error("🚦 Quota/Rate Limit Error - All models exhausted");
+            } else if (isApiKeyError) {
+                console.error("🔑 API Key Error");
+            } else if (isNetworkError) {
+                console.error("🌐 Network Connectivity Error");
+            } else if (isTimeout) {
+                console.error("⏱️ Request Timeout");
+            } else {
+                console.error("⚠️ AI Extraction Failed:", errorMessage.substring(0, 150));
             }
 
-            if (parseError.message?.includes("API key") || parseError.message?.includes("401")) {
-                return res.status(401).json({
-                    success: false,
-                    error: "Authentication failed with AI service. Please contact administrator.",
-                    code: "AUTH_ERROR"
-                });
+            // Determine user-friendly error message
+            let userErrorMessage = "AI Extraction failed. Please fill details manually.";
+            let errorCode = "AI_EXTRACTION_FAILED";
+
+            if (isQuotaError || isRateLimit) {
+                userErrorMessage = "AI quota limit reached. Please wait a moment or fill details manually.";
+                errorCode = "QUOTA_EXCEEDED";
+            } else if (isApiKeyError) {
+                userErrorMessage = "AI service authentication failed. Please contact administrator.";
+                errorCode = "AUTH_ERROR";
+            } else if (isNetworkError) {
+                userErrorMessage = "Network connection issue. Please check your internet and try again.";
+                errorCode = "NETWORK_ERROR";
+            } else if (isTimeout) {
+                userErrorMessage = "AI service timed out. Please try with a shorter resume or fill manually.";
+                errorCode = "TIMEOUT_ERROR";
             }
 
-            if (parseError.message?.includes("rate limit") || parseError.message?.includes("429")) {
-                return res.status(429).json({
-                    success: false,
-                    error: "Service is experiencing high demand. Please try again in a moment.",
-                    code: "RATE_LIMIT_ERROR"
-                });
-            }
+            console.warn(`⚠️ Returning fallback data with error: ${errorCode}`);
 
-            return res.status(500).json({
+            // RETURN SUCCESS FALSE BUT WITH DATA so frontend doesn't crash
+            return res.json({
                 success: false,
-                error: "Failed to parse resume. Please try again or contact support.",
-                code: "PARSING_FAILED",
+                error: userErrorMessage,
+                errorCode: errorCode,
+                data: getMockData(),
+                // Include debug info in development
                 ...(process.env.NODE_ENV === 'development' && {
-                    debugMessage: parseError.message
+                    debugMessage: errorMessage.substring(0, 200)
                 })
             });
         }
 
-        // ========== DATA SANITIZATION ==========
-
-        const sanitizedData = sanitizeExtractedData(parsed);
-
-        // ========== SUCCESS RESPONSE ==========
-
-        const responseTime = Date.now() - startTime;
-        console.log(`✅ Resume extraction completed in ${responseTime}ms`);
-
-        return res.json({
-            success: true,
-            data: sanitizedData,
-            metadata: {
-                filename: req.file.originalname,
-                fileSize: fileSize,
-                processingTime: responseTime,
-                model: EXTRACTOR_MODEL,
-                timestamp: new Date().toISOString()
-            }
-        });
+        // 3. Success Response
+        const cleanData = sanitizeExtractedData(parsedData);
+        res.json({ success: true, data: cleanData });
 
     } catch (error) {
-        const responseTime = Date.now() - startTime;
-        console.error(`❌ Unexpected error after ${responseTime}ms:`, error.message);
-        console.error("Error stack:", error.stack);
-
-        return res.status(500).json({
+        console.error("🔥 Critical Error:", error);
+        // Always return JSON, never 500 HTML
+        res.status(200).json({
             success: false,
-            error: "An unexpected error occurred during resume extraction.",
-            code: "INTERNAL_ERROR",
-            ...(process.env.NODE_ENV === 'development' && {
-                debugMessage: error.message
-            })
+            error: "System error during processing.",
+            data: getMockData()
         });
-
     } finally {
-        // ========== CLEANUP ==========
-
-        // Delete uploaded file
-        if (req.file && req.file.path) {
-            try {
-                fs.unlinkSync(req.file.path);
-                console.log(`🗑️ Cleaned up temporary file: ${req.file.originalname}`);
-            } catch (cleanupError) {
-                console.warn("⚠️ Failed to cleanup temporary file:", cleanupError.message);
-            }
+        if (req.file) {
+            try { fs.unlinkSync(req.file.path); } catch (e) { }
         }
     }
 };

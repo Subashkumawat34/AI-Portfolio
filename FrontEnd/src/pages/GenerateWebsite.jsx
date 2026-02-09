@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/GenerateWebsite.css";
+import AIChatbot from "../components/AIChatbot";
 
 // Import all template images
 import Template1 from "../assets/Template1.png";
@@ -68,7 +70,6 @@ const initialPortfolioFormFields = {
     website: "",
     profileImage: "",
     resumeLink: "",
-    socialLinks: [],
   },
   summary: {
     introduction: "",
@@ -104,38 +105,158 @@ const initialPortfolioFormFields = {
       demo: "",
     },
   ],
+  skills: [
+    {
+      name: "React.js",
+      percentage: "90",
+      category: "Frontend",
+    },
+    {
+      name: "Node.js",
+      percentage: "85",
+      category: "Backend",
+    },
+    {
+      name: "Git",
+      percentage: "80",
+      category: "Tools",
+    },
+  ],
   technologies: [
     {
       name: "",
       image: "",
     },
   ],
+  testimonials: [
+    {
+      name: "",
+      position: "",
+      company: "",
+      quote: "",
+      rating: "5",
+      avatar: "",
+    },
+  ],
   contactInfo: {
     email: "",
     phone: "",
     address: "",
-    formFields: [
-      { label: "Full Name", type: "text", required: true, name: "fullName" },
-      { label: "Email", type: "email", required: true, name: "email" },
-      { label: "Phone Number", type: "text", required: true, name: "phone" },
-      { label: "Subject", type: "text", required: true, name: "subject" },
-      { label: "Message", type: "textarea", required: true, name: "message" },
-    ],
   },
 };
 
+const SECTION_CONFIG = {
+  education: {
+    label: "Education",
+    itemTitleKey: "institution",
+    itemSubtitleKey: "degree",
+    fields: [
+      { name: "degree", label: "Degree", placeholder: "e.g. Bachelor of Science in Computer Science" },
+      { name: "institution", label: "Institution", placeholder: "e.g. Stanford University" },
+      {
+        row: [
+          { name: "yearStart", label: "Start Year", placeholder: "e.g. 2018" },
+          { name: "yearEnd", label: "End Year", placeholder: "e.g. 2022" }
+        ]
+      },
+      { name: "score", label: "Grade/Score", placeholder: "e.g. 3.8 GPA" },
+      { name: "details", label: "Details", type: "textarea", placeholder: "Brief description of your coursework, honors, etc." }
+    ]
+  },
+  workExperience: {
+    label: "Work Experience",
+    itemTitleKey: "position",
+    itemSubtitleKey: "organization",
+    fields: [
+      { name: "position", label: "Position", placeholder: "e.g. Senior Software Engineer" },
+      { name: "organization", label: "Company", placeholder: "e.g. Google" },
+      { name: "duration", label: "Duration", placeholder: "e.g. Jan 2020 - Present" },
+      { name: "description", label: "Description", type: "textarea", placeholder: "Describe your role and responsibilities..." },
+      { name: "bulletPoints", label: "Achievements (Bullet Points)", type: "array", placeholder: "e.g. Increased performance by 20%" }
+    ]
+  },
+  projects: {
+    label: "Projects",
+    itemTitleKey: "title",
+    itemSubtitleKey: "description",
+    fields: [
+      { name: "title", label: "Project Title", placeholder: "e.g. E-Commerce Platform" },
+      { name: "image", label: "Image URL", placeholder: "e.g. https://example.com/image.png" },
+      { name: "description", label: "Description", type: "textarea", placeholder: "What does this project do?" },
+      { name: "skills", label: "Technologies Used", type: "array", placeholder: "e.g. React, Node.js, MongoDB" },
+      {
+        row: [
+          { name: "repo", label: "GitHub Repo", placeholder: "e.g. https://github.com/..." },
+          { name: "demo", label: "Live Demo", placeholder: "e.g. https://my-project.com" }
+        ]
+      }
+    ]
+  },
+  skills: {
+    label: "Skills",
+    itemTitleKey: "name",
+    itemSubtitleKey: "category",
+    fields: [
+      { name: "name", label: "Skill Name", placeholder: "e.g. JavaScript" },
+      {
+        row: [
+          { name: "percentage", label: "Proficiency (%)", placeholder: "e.g. 90" },
+          { name: "category", label: "Category", placeholder: "e.g. Frontend, Backend, Tools" }
+        ]
+      }
+    ]
+  },
+  technologies: {
+    label: "Technologies",
+    itemTitleKey: "name",
+    fields: [
+      { name: "name", label: "Technology Name", placeholder: "e.g. Docker" },
+      { name: "image", label: "Icon URL", placeholder: "e.g. https://.../docker.png" }
+    ]
+  },
+  testimonials: {
+    label: "Testimonials",
+    itemTitleKey: "name",
+    itemSubtitleKey: "company",
+    fields: [
+      { name: "name", label: "Name", placeholder: "e.g. John Doe" },
+      {
+        row: [
+          { name: "position", label: "Position", placeholder: "e.g. CEO" },
+          { name: "company", label: "Company", placeholder: "e.g. Tech Corp" }
+        ]
+      },
+      { name: "quote", label: "Quote", type: "textarea", placeholder: "What did they say about you?" },
+      { name: "rating", label: "Rating (1-5)", placeholder: "e.g. 5" },
+      { name: "avatar", label: "Avatar URL", placeholder: "e.g. https://..." }
+    ]
+  }
+};
+
 const GenerateWebsite = () => {
+  const navigate = useNavigate();
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [formData, setFormData] = useState(initialPortfolioFormFields);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [deploymentUrl, setDeploymentUrl] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
 
-  // ✅ Handle Resume Upload (with correct auto-fill)
+  // New State for Edit Mode
+  const [editingSection, setEditingSection] = useState(null); // 'education', 'projects', etc.
+  const [editingIndex, setEditingIndex] = useState(null); // index or 'new'
+  const [tempItem, setTempItem] = useState({}); // Holds data while editing
+
+  // Validation State
+  const [validationErrors, setValidationErrors] = useState({});
+  const [showValidation, setShowValidation] = useState(false);
+
+  // Custom Fields State
+  const [customFields, setCustomFields] = useState([]);
+
+  // ... (handleResumeUpload same as before)
   const handleResumeUpload = async (e) => {
+    // ... (keep existing implementation)
     const file = e.target.files[0];
     if (!file) return;
 
@@ -151,7 +272,19 @@ const GenerateWebsite = () => {
         formDataUpload,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      const extractedData = response.data;
+      const extractedData = response.data.data; // Access .data.data structure
+
+      if (!response.data.success) {
+        console.error("❌ Resume Extraction Failed:", response.data.error);
+        if (response.data.debugMessage) {
+          console.error("🔍 Debug Info:", response.data.debugMessage);
+        }
+        setUploadMessage(response.data.error || "Limited extraction. Please check details.");
+      } else {
+        console.log("✅ Resume Extraction Successful");
+        setUploadMessage("Resume data extracted successfully!");
+      }
+
 
       setFormData((prev) => ({
         ...prev,
@@ -168,21 +301,21 @@ const GenerateWebsite = () => {
           : prev.education,
         workExperience: Array.isArray(extractedData.experience)
           ? extractedData.experience.map((exp) => ({
-              position: exp.title || "",
-              organization: exp.organization || "",
-              duration: exp.duration || "",
-              description: exp.description || "",
-              bulletPoints: [],
-            }))
+            position: exp.title || "",
+            organization: exp.organization || "",
+            duration: exp.duration || "",
+            description: exp.description || "",
+            bulletPoints: [],
+          }))
           : prev.workExperience,
         projects: Array.isArray(extractedData.projects)
           ? extractedData.projects
           : prev.projects,
         technologies: Array.isArray(extractedData.skills?.languages)
           ? extractedData.skills.languages.map((lang) => ({
-              name: lang,
-              image: "",
-            }))
+            name: lang,
+            image: "",
+          }))
           : prev.technologies,
         contactInfo: {
           ...prev.contactInfo,
@@ -193,14 +326,14 @@ const GenerateWebsite = () => {
         },
       }));
 
-      setUploadMessage("Resume data extracted successfully!");
     } catch (error) {
       console.error("Resume upload error:", error);
-      setUploadMessage("Failed to extract data. Please fill manually.");
+      setUploadMessage("Failed to connect to server. Please fill manually.");
     } finally {
       setUploading(false);
     }
   };
+
 
   const handleInputChange = (e, section) => {
     const { name, value } = e.target;
@@ -210,33 +343,138 @@ const GenerateWebsite = () => {
     }));
   };
 
-  const handleArrayInputChange = (e, section, field) => {
+  // --- Array Item Management ---
+
+  const startEditing = (section, index) => {
+    setEditingSection(section);
+    setEditingIndex(index);
+    if (index === 'new') {
+      // Initialize empty item based on keys in schema or defaults
+      // Simple approach: empty object, fields will be controlled inputs
+      setTempItem({});
+    } else {
+      setTempItem({ ...formData[section][index] });
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingSection(null);
+    setEditingIndex(null);
+    setTempItem({});
+  };
+
+  const saveItem = () => {
+    if (!editingSection) return;
+
+    setFormData((prev) => {
+      const newList = [...prev[editingSection]];
+      if (editingIndex === 'new') {
+        newList.push(tempItem);
+      } else {
+        newList[editingIndex] = tempItem;
+      }
+      return { ...prev, [editingSection]: newList };
+    });
+
+    cancelEditing();
+  };
+
+  const handleTempChange = (e, field) => {
     const { value } = e.target;
+    setTempItem(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleTempArrayChange = (e, field) => {
+    const { value } = e.target;
+    setTempItem(prev => ({ ...prev, [field]: value.split(',').map(s => s.trim()) }));
+  };
+
+  const removeItem = (section, index) => {
     setFormData((prev) => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean),
-      },
+      [section]: prev[section].filter((_, i) => i !== index),
     }));
   };
 
+  // Custom Fields Management
+  const addCustomField = () => {
+    setCustomFields([...customFields, { key: "", value: "" }]);
+  };
+
+  const updateCustomField = (index, field, value) => {
+    const updated = [...customFields];
+    updated[index][field] = value;
+    setCustomFields(updated);
+  };
+
+  const removeCustomField = (index) => {
+    setCustomFields(customFields.filter((_, i) => i !== index));
+  };
+
+  // Form Validation
+  const validateForm = () => {
+    const errors = {};
+
+    // Required fields validation
+    if (!formData.personalInfo.fullName?.trim()) {
+      errors.fullName = "Full name is required";
+    }
+    if (!formData.personalInfo.email?.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.personalInfo.email)) {
+      errors.email = "Please enter a valid email";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // ... (handleSubmit and resetState remain same)
   // ✅ UPDATED: Save deployed site to localStorage + show link
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form before submission
+    setShowValidation(true);
+    if (!validateForm()) {
+      setSubmitError("Please fill in all required fields correctly (Full Name and Email are required)");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError("");
-    setSubmitSuccess(false);
 
     try {
+      // Transform Skills into Categories for Template 2
+      const transformedSkills = [];
+      const categories = {};
+
+      formData.skills.forEach(skill => {
+        const cat = skill.category || "Other";
+        if (!categories[cat]) {
+          categories[cat] = [];
+        }
+        categories[cat].push(skill);
+      });
+
+      Object.keys(categories).forEach(cat => {
+        transformedSkills.push({
+          category: cat,
+          items: categories[cat]
+        });
+      });
+
+      const submissionData = {
+        ...formData,
+        skills: transformedSkills
+      };
+
       const response = await axios.post(
         "http://localhost:8080/generator/generate-and-deploy",
         {
           template: selectedTemplate.id,
-          data: formData,
+          data: submissionData,
         }
       );
 
@@ -273,9 +511,13 @@ const GenerateWebsite = () => {
         const updatedSites = [...existingSites, newSite];
         localStorage.setItem("sites", JSON.stringify(updatedSites));
 
-        // 4️⃣ Existing UI behavior
-        setDeploymentUrl(deployedUrl);
-        setSubmitSuccess(true);
+        // 4️⃣ Navigate to success page with deployment data
+        navigate('/success', {
+          state: {
+            deploymentUrl: deployedUrl,
+            repoUrl: response.data.repoUrl
+          }
+        });
       } else {
         throw new Error(response.data.message || "Deployment failed");
       }
@@ -296,32 +538,17 @@ const GenerateWebsite = () => {
   };
 
   const renderFormField = (sectionKey, fieldKey, fieldValue) => {
+    // Standard render for non-array fields
     const label = fieldKey
       .replace(/([A-Z])/g, " $1")
       .replace(/^./, (str) => str.toUpperCase());
     const isTextArea = [
-      "history",
-      "mission",
-      "vision",
-      "process",
-      "eligibility",
+      "introduction",
+      "description",
+      "details",
+      "message",
+      "quote"
     ].includes(fieldKey);
-
-    if (Array.isArray(fieldValue)) {
-      return (
-        <div className="form-group" key={fieldKey}>
-          <label htmlFor={`${sectionKey}-${fieldKey}`}>{label}</label>
-          <input
-            type="text"
-            id={`${sectionKey}-${fieldKey}`}
-            name={fieldKey}
-            value={formData[sectionKey][fieldKey]?.join(", ")}
-            onChange={(e) => handleArrayInputChange(e, sectionKey, fieldKey)}
-            placeholder="Enter values, separated by commas"
-          />
-        </div>
-      );
-    }
 
     return (
       <div className="form-group" key={fieldKey}>
@@ -372,50 +599,167 @@ const GenerateWebsite = () => {
             ))}
           </div>
         </>
-      ) : submitSuccess ? (
-        <div className="success-message-container">
-          <h2>Website Deployed Successfully!</h2>
-          <a
-            href={deploymentUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="deployment-link"
-          >
-            {deploymentUrl}
-          </a>
-          <button className="btn btn-primary" onClick={resetState}>
-            Create Another Website
-          </button>
-        </div>
       ) : (
         <div className="website-form-container">
           <form onSubmit={handleSubmit} className="website-form">
-            <div className="upload-section">
-              <h3>Upload Resume (Auto-Fill)</h3>
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleResumeUpload}
-                disabled={uploading}
-              />
-              {uploading && (
-                <p className="uploading-text">Uploading and Extracting...</p>
-              )}
+            <div className="upload-section-enhanced">
+              <div className="upload-icon">
+                <i className="bx bx-cloud-upload" style={{ fontSize: '3rem' }}></i>
+              </div>
+              <h3>Upload Document/Resume</h3>
+              <p style={{ color: '#ff8c00', fontSize: '0.9rem', marginBottom: '1.5rem', position: 'relative', zIndex: 1 }}>
+                PDF format • Auto-fills your information
+              </p>
+
+              <label htmlFor="resume-upload">
+                <input
+                  id="resume-upload"
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleResumeUpload}
+                  disabled={uploading}
+                  style={{ display: 'none' }}
+                />
+                <button
+                  type="button"
+                  className="btn-upload"
+                  onClick={() => document.getElementById('resume-upload').click()}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <>
+                      <div className="spinner"></div>
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="bx bx-upload"></i>
+                      <span>Choose File</span>
+                    </>
+                  )}
+                </button>
+              </label>
+
               {uploadMessage && (
-                <p className="upload-message">{uploadMessage}</p>
+                <div className={`upload-message ${uploadMessage.includes('success') ? 'success' : 'info'}`}>
+                  <i className={`bx ${uploadMessage.includes('success') ? 'bx-check-circle' : 'bx-info-circle'}`}></i>
+                  {uploadMessage}
+                </div>
               )}
             </div>
 
-            {Object.entries(formData).map(([sectionKey, sectionFields]) => (
+            {Object.entries(formData).map(([sectionKey, sectionData]) => (
               <fieldset className="form-section" key={sectionKey}>
                 <legend>
                   {sectionKey
                     .replace(/([A-Z])/g, " $1")
                     .replace(/^./, (str) => str.toUpperCase())}
                 </legend>
-                {Object.entries(sectionFields).map(([fieldKey, fieldValue]) =>
-                  renderFormField(sectionKey, fieldKey, fieldValue)
+
+                {Array.isArray(sectionData) ? (
+                  // ✅ Refactored Array Rendering
+                  <div className="list-editor">
+
+                    {/* List View */}
+                    {!editingSection || editingSection !== sectionKey ? (
+                      <>
+                        {sectionData.length > 0 && (
+                          <div className="items-list-grid">
+                            {sectionData.map((item, index) => {
+                              const config = SECTION_CONFIG[sectionKey] || {};
+                              const title = item[config.itemTitleKey] || `Item ${index + 1}`;
+                              const subtitle = item[config.itemSubtitleKey] || "";
+
+                              return (
+                                <div key={index} className="summary-card">
+                                  <div className="summary-info">
+                                    <h4>{title}</h4>
+                                    {subtitle && <p>{subtitle}</p>}
+                                  </div>
+                                  <div className="summary-actions">
+                                    <button type="button" className="btn-icon-edit" onClick={() => startEditing(sectionKey, index)}>✏️</button>
+                                    <button type="button" className="btn-icon-remove" onClick={() => removeItem(sectionKey, index)}>🗑️</button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                        <button type="button" className="btn-add-item" onClick={() => startEditing(sectionKey, 'new')}>
+                          + Add {SECTION_CONFIG[sectionKey]?.label || "Item"}
+                        </button>
+                      </>
+                    ) : (
+                      // Edit View
+                      <div className="edit-form-card">
+                        <h4>{editingIndex === 'new' ? `Add New ${SECTION_CONFIG[sectionKey]?.label}` : `Edit ${SECTION_CONFIG[sectionKey]?.label}`}</h4>
+
+                        <div className="edit-form-fields">
+                          {SECTION_CONFIG[sectionKey]?.fields.map((fieldConfig, idx) => {
+                            // Handle Row (Two Columns)
+                            if (fieldConfig.row) {
+                              return (
+                                <div className="form-row" key={idx}>
+                                  {fieldConfig.row.map((subField) => (
+                                    <div className="form-group half-width" key={subField.name}>
+                                      <label>{subField.label}</label>
+                                      <input
+                                        type="text"
+                                        value={tempItem[subField.name] || ""}
+                                        onChange={(e) => handleTempChange(e, subField.name)}
+                                        placeholder={subField.placeholder}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            }
+
+                            // Handle Standard Fields
+                            return (
+                              <div className="form-group" key={fieldConfig.name}>
+                                <label>{fieldConfig.label}</label>
+                                {fieldConfig.type === 'textarea' ? (
+                                  <textarea
+                                    value={tempItem[fieldConfig.name] || ""}
+                                    onChange={(e) => handleTempChange(e, fieldConfig.name)}
+                                    placeholder={fieldConfig.placeholder}
+                                    rows={4}
+                                  />
+                                ) : fieldConfig.type === 'array' ? (
+                                  <input
+                                    type="text"
+                                    value={Array.isArray(tempItem[fieldConfig.name]) ? tempItem[fieldConfig.name].join(', ') : tempItem[fieldConfig.name] || ""}
+                                    onChange={(e) => handleTempArrayChange(e, fieldConfig.name)}
+                                    placeholder={fieldConfig.placeholder}
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
+                                    value={tempItem[fieldConfig.name] || ""}
+                                    onChange={(e) => handleTempChange(e, fieldConfig.name)}
+                                    placeholder={fieldConfig.placeholder}
+                                  />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="edit-actions">
+                          <button type="button" className="btn btn-secondary" onClick={cancelEditing}>Cancel</button>
+                          <button type="button" className="btn btn-primary" onClick={saveItem}>Save Item</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  // Render Standard Fields for Objects
+                  Object.entries(sectionData).map(([fieldKey, fieldValue]) => {
+                    return renderFormField(sectionKey, fieldKey, fieldValue);
+                  })
                 )}
+
               </fieldset>
             ))}
 
@@ -441,6 +785,9 @@ const GenerateWebsite = () => {
             )}
           </form>
         </div>
+      )}
+      {selectedTemplate && (
+        <AIChatbot selectedTemplate={selectedTemplate} formData={formData} />
       )}
     </div>
   );

@@ -2,7 +2,8 @@
 
 /* --- General & Variables --- */
 :root {
-  --primary-color: #4a90e2;
+  --primary-color: #ff4f00;
+  --primary-hover: #e04500;
   --premium-color: #d0021b;
   --secondary-color: #6c757d;
   --light-bg: #f8f9fa;
@@ -152,7 +153,7 @@
 
 /* --- Website Form --- */
 .website-form-container {
-  background-color: var(--light-bg);
+  background-color: #fff8f0;
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
@@ -200,8 +201,21 @@
 .form-group input[type="text"]:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.25);
+  animation: blink-border 0.5s ease-in-out;
+}
+
+@keyframes blink-border {
+
+  0%,
+  100% {
+    border-color: #ff8c00;
+  }
+
+  50% {
+    border-color: #ffaa00;
+  }
 }
 
 .form-group small {
@@ -239,28 +253,124 @@
 }
 
 .btn-primary {
+  background-color: #ff8c00;
+  color: var(--light-text);
+}
+
+.btn-ec {
   background-color: var(--primary-color);
   color: var(--light-text);
 }
+
 .btn-primary:hover:not(:disabled) {
-  background-color: #357abd;
+  background-color: #e67e00;
+}
+
+.btn-add {
+  background-color: #ff8c00;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.btn-add:hover {
+  background-color: #e07b00;
+}
+
+.btn-remove {
+  background-color: #ff4500;
+  color: #fff;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-remove:hover {
+  background-color: #cc3700;
 }
 
 .btn-premium {
   background-color: var(--premium-color);
   color: var(--light-text);
 }
+
 .btn-premium:hover:not(:disabled) {
   background-color: #a70016;
 }
 
 .btn-secondary {
-  background-color: #e9ecef;
-  color: var(--dark-text);
-  border: 1px solid var(--border-color);
+  background-color: #ffe0b2;
+  color: #e65100;
+  border: 1px solid #ffcc80;
 }
+
 .btn-secondary:hover:not(:disabled) {
-  background-color: #d6dbe0;
+  background-color: #ffcc80;
+}
+
+/* Edit actions buttons */
+/* Cancel button - Light Orange background, Black text */
+.edit-actions .btn-secondary {
+  background-color: #ffe0b2 !important;
+  color: #000000 !important;
+  border: 1px solid #ffcc80 !important;
+  padding: 0.5rem 1rem;
+  min-width: 90px;
+  width: auto;
+}
+
+.edit-actions .btn-secondary:hover:not(:disabled) {
+  background-color: #ffcc80 !important;
+  color: #000000 !important;
+}
+
+/* Save Item button - Blue background, White text */
+.edit-actions .btn-primary {
+  background-color: #2196f3 !important;
+  color: #ffffff !important;
+  border: 1px solid #2196f3 !important;
+  padding: 0.5rem 1rem;
+  min-width: 100px;
+  width: auto;
+}
+
+.edit-actions .btn-primary:hover:not(:disabled) {
+  background-color: #1976d2 !important;
+  color: #ffffff !important;
+}
+
+/* Back button - Blue background, White text */
+.form-actions .btn-secondary {
+  background-color: #2196f3 !important;
+  color: #ffffff !important;
+  border: 1px solid #2196f3 !important;
+  padding: 0.5rem 1rem;
+  min-width: 90px;
+}
+
+.form-actions .btn-secondary:hover:not(:disabled) {
+  background-color: #1976d2 !important;
+  color: #ffffff !important;
+}
+
+/* Generate Website button - Orange background, White text */
+.form-actions .btn-primary {
+  background-color: #ff8c00 !important;
+  color: #ffffff !important;
+  border: 1px solid #ff8c00 !important;
+  padding: 0.5rem 1rem;
+  min-width: 140px;
+}
+
+.form-actions .btn-primary:hover:not(:disabled) {
+  background-color: #e67e00 !important;
+  color: #ffffff !important;
 }
 
 /* --- Success Message --- */
@@ -334,8 +444,263 @@
   margin-top: 8px;
 }
 
-.upload-message {
-  margin-top: 10px;
+/* --- New Form Styles (List & Edit Mode) --- */
+
+.items-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.summary-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.summary-card:hover {
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-color: var(--primary-color);
+}
+
+.summary-info h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  color: var(--dark-text);
+  font-weight: 600;
+}
+
+.summary-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--secondary-color);
+}
+
+.summary-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon-edit,
+.btn-icon-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-icon-edit:hover {
+  background: #e9ecef;
+}
+
+.btn-icon-remove:hover {
+  background: #ffe3e3;
+}
+
+.btn-add-item {
+  width: 100%;
+  padding: 0.75rem;
+  background: white;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  color: var(--primary-color);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-item:hover {
+  border-color: var(--primary-color);
+  background: #fff5eb;
+}
+
+/* Edit Mode */
+.edit-form-card {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.edit-form-card h4 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+  color: var(--primary-color);
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+/* ===== Enhanced Upload Section ===== */
+.upload-section-enhanced {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe4cc 100%);
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 2px dashed #ff8c00;
+  margin-bottom: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-section-enhanced::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 140, 0, 0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+}
+
+.upload-section-enhanced:hover {
+  border-color: #e67e00;
+  background: linear-gradient(135deg, #fff0db 0%, #ffd9b3 100%);
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.15);
+}
+
+.upload-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.upload-section-enhanced h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #e65100;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-upload {
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.btn-upload:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Validation Styles ===== */
+.required {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.input-error {
+  border-color: #d32f2f !important;
+  background-color: #ffebee;
+}
+
+.error-text {
+  display: block;
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
   font-weight: 500;
-  color: #4b0082;
+}
+
+/* ===== Custom Fields ===== */
+.custom-field-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.custom-field-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-field-input:focus {
+  outline: none;
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.25);
 }

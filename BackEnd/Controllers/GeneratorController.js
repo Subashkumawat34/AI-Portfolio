@@ -35,15 +35,17 @@ const generateAndDeploy = async (req, res) => {
     await fs.ensureDir(localRepoPath);
 
     // 1. Generate website files
+    // Templates are organized in subdirectories: template1/index.ejs, template2/index.ejs, etc.
     const templatePath = path.join(
       __dirname,
       "..",
       "Templates",
-      `template${templateId}.ejs`
+      `template${templateId}`,
+      "index.ejs"
     );
 
     if (!(await fs.pathExists(templatePath))) {
-      throw new Error(`Template ${templateId} not found`);
+      throw new Error(`Template ${templateId} not found at ${templatePath}`);
     }
 
     console.log("🛠️  Generating HTML from template");
@@ -87,7 +89,7 @@ const generateAndDeploy = async (req, res) => {
       );
       throw new Error(
         githubError.response?.data?.message ||
-          "Failed to create GitHub repository. Please check your GitHub token."
+        "Failed to create GitHub repository. Please check your GitHub token."
       );
     }
 
@@ -146,7 +148,7 @@ const generateAndDeploy = async (req, res) => {
       );
       throw new Error(
         vercelError.response?.data?.error?.message ||
-          "Failed to create Vercel deployment. Please check your Vercel token."
+        "Failed to create Vercel deployment. Please check your Vercel token."
       );
     }
 
@@ -197,7 +199,7 @@ const generateAndDeploy = async (req, res) => {
     if (!deploymentUrl) {
       throw new Error(
         lastError ||
-          "Deployment did not complete in time. Please check Vercel dashboard."
+        "Deployment did not complete in time. Please check Vercel dashboard."
       );
     }
 
@@ -209,6 +211,7 @@ const generateAndDeploy = async (req, res) => {
     return res.json({
       success: true,
       deploymentUrl,
+      repoUrl: `https://github.com/${GITHUB_USERNAME}/${repoName}`,
       message: "Portfolio Website deployed successfully!",
     });
   } catch (error) {
