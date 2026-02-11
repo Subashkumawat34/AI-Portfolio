@@ -183,7 +183,7 @@ function App() {
             }
           />
           <Route
-            path="/Generate-website"
+            path="/generate-website"
             element={
               <ProtectedRoute isAuthenticated={authState.isAuthenticated}>
                 <GenerateWebsite />

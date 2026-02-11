@@ -60,7 +60,6 @@ function Signup() {
       <h1>Sign Up</h1>
       <form onSubmit={handleSignup}>
         <div className="form-group mb-3">
-          <label htmlFor="name">Full Name</label>
           <input
             className="form-control"
             onChange={handleChange}
@@ -68,33 +67,31 @@ function Signup() {
             name="name"
             id="name"
             autoFocus
-            placeholder="Enter your full name"
+            placeholder="Full Name"
             value={signupInfo.name}
             required
           />
         </div>
         <div className="form-group mb-3">
-          <label htmlFor="email">Email Address</label>
           <input
             className="form-control"
             onChange={handleChange}
             type="email"
             name="email"
             id="email"
-            placeholder="Enter your email"
+            placeholder="Email Address"
             value={signupInfo.email}
             required
           />
         </div>
         <div className="form-group mb-3">
-          <label htmlFor="password">Password</label>
           <input
             className="form-control"
             onChange={handleChange}
             type="password"
             name="password"
             id="password"
-            placeholder="Create a password (min. 6 characters)"
+            placeholder="Password (min. 6 characters)"
             value={signupInfo.password}
             required
           />

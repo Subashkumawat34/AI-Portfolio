@@ -1,8 +1,10 @@
 // OneClickDeploy.jsx
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import "../../styles/Features.css";
 
 const OneClickDeploy = () => {
+  const navigate = useNavigate();
   return (
     <div className="feature-page-container">
       <motion.header
@@ -70,6 +72,75 @@ const OneClickDeploy = () => {
             </motion.li>
           ))}
         </motion.ul>
+      </motion.section>
+
+      {/* Performance Metrics */}
+      <motion.section
+        className="stats-section"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        {[
+          { number: "< 60s", label: "Deploy Time" },
+          { number: "99.9%", label: "Uptime" },
+          { number: "Global", label: "CDN Coverage" },
+        ].map((stat, index) => (
+          <motion.div
+            key={index}
+            className="stat-card"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.2, duration: 0.6 }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <span className="stat-number">{stat.number}</span>
+            <span className="stat-label">{stat.label}</span>
+          </motion.div>
+        ))}
+      </motion.section>
+
+      {/* Technology Stack */}
+      <motion.section
+        className="feature-section"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+      >
+        <h2>🚀 Powered By Industry Leaders</h2>
+        <p>
+          We leverage the best technologies to ensure your portfolio is fast,
+          secure, and always available.
+        </p>
+        <motion.div
+          className="tech-stack"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1 } },
+          }}
+        >
+          {["GitHub", "Vercel", "CDN", "HTTPS/SSL", "Auto-Scaling"].map(
+            (tech, i) => (
+              <motion.div
+                key={i}
+                className="tech-badge"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                whileHover={{ scale: 1.1 }}
+              >
+                {tech}
+              </motion.div>
+            )
+          )}
+        </motion.div>
       </motion.section>
       <motion.section
         className="feature-section"
@@ -171,6 +242,7 @@ const OneClickDeploy = () => {
             boxShadow: "0px 0px 18px rgba(243,156,18,0.6)",
           }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => navigate("/generate-website")}
         >
           Deploy My Portfolio
         </motion.button>

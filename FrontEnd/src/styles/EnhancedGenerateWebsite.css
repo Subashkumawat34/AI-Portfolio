@@ -1,0 +1,215 @@
+/* Enhanced Template Card 3D Effects */
+.template-card {
+    background-color: var(--light-text);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.template-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.template-card:hover {
+    transform: translateY(-12px) rotateX(3deg) rotateY(2deg);
+    box-shadow: 0 20px 40px rgba(255, 140, 0, 0.2);
+}
+
+.template-card:hover::before {
+    opacity: 1;
+}
+
+/* Progress Indicator */
+.progress-indicator {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 140, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: slideDown 0.4s ease-out;
+}
+
+.progress-bar-container {
+    width: 200px;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff8c00, #ff6b00);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+}
+
+.progress-text {
+    font-weight: 600;
+    color: #ff8c00;
+    font-size: 0.95rem;
+}
+
+/* Form Field Animations */
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff8c00;
+    box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.15);
+    transform: translateY(-2px);
+    background: #fffbf5;
+}
+
+/* Floating Label Effect */
+.form-group {
+    position: relative;
+    margin-bottom: 1.75rem;
+}
+
+.form-group label {
+    position: absolute;
+    left: 1rem;
+    top: 0.75rem;
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    background: white;
+    padding: 0 0.25rem;
+}
+
+.form-group input:focus+label,
+.form-group input:not(:placeholder-shown)+label,
+.form-group textarea:focus+label,
+.form-group textarea:not(:placeholder-shown)+label {
+    top: -0.5rem;
+    left: 0.75rem;
+    font-size: 0.85rem;
+    color: #ff8c00;
+    font-weight: 600;
+}
+
+/* Enhanced Button Animations */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+    border: none;
+    color: white;
+    padding: 0.875rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+/* Success Animation */
+@keyframes successPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.success-icon {
+    animation: successPulse 2s ease-in-out infinite;
+}
+
+/* Confetti Effect Container */
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .progress-indicator {
+        width: 90%;
+        padding: 0.75rem 1rem;
+    }
+
+    .progress-bar-container {
+        width: 150px;
+    }
+
+    .template-card:hover {
+        transform: translateY(-8px);
+    }
+}

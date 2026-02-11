@@ -203,7 +203,32 @@
   outline: none;
   border-color: #ff8c00;
   box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.25);
-  animation: blink-border 0.5s ease-in-out;
+  animation: input-blink-generate 0.6s ease-in-out;
+}
+
+/* Blink animation for generate website form */
+@keyframes input-blink-generate {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.25);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba(255, 140, 0, 0.4);
+  }
+}
+
+/* Make placeholders visible */
+.form-group input[type="text"]::placeholder,
+.form-group textarea::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+.form-group input[type="text"]:focus::placeholder,
+.form-group textarea:focus::placeholder {
+  opacity: 0.5;
 }
 
 @keyframes blink-border {
@@ -703,4 +728,14 @@
   outline: none;
   border-color: #ff8c00;
   box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.25);
+  animation: input-blink-generate 0.6s ease-in-out;
+}
+
+.custom-field-input::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+.custom-field-input:focus::placeholder {
+  opacity: 0.5;
 }

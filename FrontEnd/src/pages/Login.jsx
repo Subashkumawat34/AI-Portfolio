@@ -55,7 +55,6 @@ function Login({ onLoginSuccess }) {
       <h1>Login</h1>
       <form onSubmit={handleLogin}>
         <div className="form-group mb-3">
-          <label htmlFor="email">Email Address</label>
           <input
             className="form-control"
             onChange={handleChange}
@@ -63,20 +62,19 @@ function Login({ onLoginSuccess }) {
             name="email"
             id="email"
             autoFocus
-            placeholder="Enter your email"
+            placeholder="Email Address"
             value={loginInfo.email}
             required
           />
         </div>
         <div className="form-group mb-3">
-          <label htmlFor="password">Password</label>
           <input
             className="form-control"
             onChange={handleChange}
             type="password"
             name="password"
             id="password"
-            placeholder="Enter your password"
+            placeholder="Password"
             value={loginInfo.password}
             required
           />
@@ -85,7 +83,7 @@ function Login({ onLoginSuccess }) {
           Login
         </button>
         <div className="mt-3 text-center">
-          Don’t have an account? <Link to="/signup">Sign up</Link>
+          Don't have an account? <Link to="/signup">Sign up</Link>
         </div>
       </form>
     </div>

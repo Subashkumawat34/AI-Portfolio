@@ -1,8 +1,10 @@
 // AIContentGeneration.jsx
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import "../../styles/Features.css";
 
 const AIContentGeneration = () => {
+  const navigate = useNavigate();
   return (
     <div className="feature-page-container">
       {/* Hero Section */}
@@ -86,6 +88,34 @@ const AIContentGeneration = () => {
             </motion.li>
           ))}
         </motion.ul>
+      </motion.section>
+
+      {/* Statistics Section */}
+      <motion.section
+        className="stats-section"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        {[
+          { number: "5,000+", label: "Portfolios Generated" },
+          { number: "97%", label: "Satisfaction Rate" },
+          { number: "< 5min", label: "Average Time" },
+        ].map((stat, index) => (
+          <motion.div
+            key={index}
+            className="stat-card"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.2, duration: 0.6 }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <span className="stat-number">{stat.number}</span>
+            <span className="stat-label">{stat.label}</span>
+          </motion.div>
+        ))}
       </motion.section>
 
       {/* How It Works */}
@@ -198,6 +228,7 @@ const AIContentGeneration = () => {
           className="primary-btn"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => navigate("/generate-website")}
         >
           Generate My Portfolio
         </motion.button>

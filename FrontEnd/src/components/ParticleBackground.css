@@ -1,0 +1,154 @@
+.particle-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(40px);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.shape-1 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.6) 0%, transparent 70%);
+    top: 10%;
+    left: 10%;
+    animation: float1 20s;
+}
+
+.shape-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 107, 0, 0.5) 0%, transparent 70%);
+    top: 50%;
+    right: 15%;
+    animation: float2 25s;
+}
+
+.shape-3 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, transparent 70%);
+    bottom: 20%;
+    left: 25%;
+    animation: float3 18s;
+}
+
+.shape-4 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(255, 167, 38, 0.4) 0%, transparent 70%);
+    top: 30%;
+    left: 50%;
+    animation: float4 22s;
+}
+
+.shape-5 {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 195, 160, 0.5) 0%, transparent 70%);
+    bottom: 10%;
+    right: 30%;
+    animation: float5 16s;
+}
+
+.shape-6 {
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(255, 154, 158, 0.4) 0%, transparent 70%);
+    top: 70%;
+    right: 10%;
+    animation: float6 24s;
+}
+
+/* Animation Keyframes */
+@keyframes float1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(50px, -30px) scale(1.1);
+    }
+}
+
+@keyframes float2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(-40px, 40px) scale(1.15);
+    }
+}
+
+@keyframes float3 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(30px, -50px) rotate(180deg);
+    }
+}
+
+@keyframes float4 {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(-60px, -40px);
+    }
+}
+
+@keyframes float5 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(40px, 30px) scale(1.2);
+    }
+}
+
+@keyframes float6 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(-50px, -20px) rotate(-180deg);
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .floating-shape {
+        animation: none !important;
+    }
+}

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 import "../styles/GenerateWebsite.css";
+import "../styles/EnhancedGenerateWebsite.css";
 import AIChatbot from "../components/AIChatbot";
 
 // Import all template images
@@ -552,7 +554,6 @@ const GenerateWebsite = () => {
 
     return (
       <div className="form-group" key={fieldKey}>
-        <label htmlFor={`${sectionKey}-${fieldKey}`}>{label}</label>
         {isTextArea ? (
           <textarea
             id={`${sectionKey}-${fieldKey}`}
@@ -560,6 +561,7 @@ const GenerateWebsite = () => {
             value={fieldValue}
             onChange={(e) => handleInputChange(e, sectionKey)}
             rows="4"
+            placeholder={label}
           />
         ) : (
           <input
@@ -568,6 +570,7 @@ const GenerateWebsite = () => {
             name={fieldKey}
             value={fieldValue}
             onChange={(e) => handleInputChange(e, sectionKey)}
+            placeholder={label}
           />
         )}
       </div>
@@ -702,12 +705,11 @@ const GenerateWebsite = () => {
                                 <div className="form-row" key={idx}>
                                   {fieldConfig.row.map((subField) => (
                                     <div className="form-group half-width" key={subField.name}>
-                                      <label>{subField.label}</label>
                                       <input
                                         type="text"
                                         value={tempItem[subField.name] || ""}
                                         onChange={(e) => handleTempChange(e, subField.name)}
-                                        placeholder={subField.placeholder}
+                                        placeholder={subField.label}
                                       />
                                     </div>
                                   ))}
@@ -718,12 +720,11 @@ const GenerateWebsite = () => {
                             // Handle Standard Fields
                             return (
                               <div className="form-group" key={fieldConfig.name}>
-                                <label>{fieldConfig.label}</label>
                                 {fieldConfig.type === 'textarea' ? (
                                   <textarea
                                     value={tempItem[fieldConfig.name] || ""}
                                     onChange={(e) => handleTempChange(e, fieldConfig.name)}
-                                    placeholder={fieldConfig.placeholder}
+                                    placeholder={fieldConfig.label}
                                     rows={4}
                                   />
                                 ) : fieldConfig.type === 'array' ? (
@@ -731,14 +732,14 @@ const GenerateWebsite = () => {
                                     type="text"
                                     value={Array.isArray(tempItem[fieldConfig.name]) ? tempItem[fieldConfig.name].join(', ') : tempItem[fieldConfig.name] || ""}
                                     onChange={(e) => handleTempArrayChange(e, fieldConfig.name)}
-                                    placeholder={fieldConfig.placeholder}
+                                    placeholder={fieldConfig.label}
                                   />
                                 ) : (
                                   <input
                                     type="text"
                                     value={tempItem[fieldConfig.name] || ""}
                                     onChange={(e) => handleTempChange(e, fieldConfig.name)}
-                                    placeholder={fieldConfig.placeholder}
+                                    placeholder={fieldConfig.label}
                                   />
                                 )}
                               </div>

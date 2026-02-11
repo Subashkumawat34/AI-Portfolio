@@ -63,9 +63,8 @@ const HowItWorks = () => {
         {steps.map((step, index) => (
           <div
             key={step.id || index}
-            className={`step-item ${
-              index % 2 !== 0 ? "step-item-reversed" : ""
-            }`}
+            className={`step-item ${index % 2 !== 0 ? "step-item-reversed" : ""
+              }`}
           >
             {/* IMAGE animates from right */}
             <motion.div
@@ -86,7 +85,7 @@ const HowItWorks = () => {
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: true }}
             >
-              <h2 className="step-title">{step.title}</h2>
+              <h2 className="step-title" data-step={index + 1}>{step.title}</h2>
               <p className="step-description">{step.description}</p>
               <p className="step-extra">{step.extra}</p>
             </motion.div>

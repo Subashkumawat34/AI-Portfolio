@@ -1,0 +1,5 @@
+{
+  "message": "Deployment failed with unknown error",
+  "stack": "Error: Deployment failed with unknown error\n    at generateAndDeploy (E:\\projects\\AI_Based_Portfolio_website_generator\\BackEnd\\Controllers\\GeneratorController.js:251:13)",
+  "details": {}
+}

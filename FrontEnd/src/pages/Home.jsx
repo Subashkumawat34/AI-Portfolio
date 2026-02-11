@@ -1,12 +1,48 @@
+import { useState, useEffect } from "react";
 import "../styles/Home.css";
 import { Button } from "react-bootstrap";
 import SchoolImage from "../assets/school-image.jpg";
 import Section1 from "../assets/section1.png";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import ParticleBackground from "../components/ParticleBackground";
 
 function Home({ isAuthenticated, userName }) {
   const navigate = useNavigate();
+
+  // Stats counter state
+  const [stats, setStats] = useState({
+    portfolios: 0,
+    users: 0,
+    deployments: 0
+  });
+
+  // Animate counters on mount
+  useEffect(() => {
+    const targets = { portfolios: 5000, users: 12000, deployments: 8000 };
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const interval = duration / steps;
+    let currentStep = 0;
+
+    const timer = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+
+      setStats({
+        portfolios: Math.floor(targets.portfolios * progress),
+        users: Math.floor(targets.users * progress),
+        deployments: Math.floor(targets.deployments * progress)
+      });
+
+      if (currentStep >= steps) {
+        clearInterval(timer);
+        setStats(targets);
+      }
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleHowItWorksClick = () => {
     navigate("/how-it-works");
@@ -47,6 +83,7 @@ function Home({ isAuthenticated, userName }) {
 
   return (
     <>
+      <ParticleBackground />
       <div className="page-container">
         <motion.div
           className="hero-section"
@@ -62,7 +99,7 @@ function Home({ isAuthenticated, userName }) {
                 <span>Create Portfolios</span>
               </nav>
 
-              <h1>
+              <h1 className="gradient-text">
                 Online Portfolio
                 <br />
                 Creator
@@ -167,7 +204,13 @@ function Home({ isAuthenticated, userName }) {
             projects, work experiences, and skills through beautiful layouts and
             publish instantly.
           </p>
-          <Button className="cta-btn">Start Building</Button>
+          <Button
+            className="cta-btn"
+            onClick={handlePrimaryActionClick}
+            aria-label="Start building portfolio"
+          >
+            {isAuthenticated ? "Go to Dashboard" : "Start Building"}
+          </Button>
         </motion.div>
       </motion.div>
       <motion.div
@@ -209,7 +252,13 @@ function Home({ isAuthenticated, userName }) {
           Create digital portfolios for products, services, and brands in
           minutes
         </h2>
-        <button className="cta-button">Make a digital portfolio</button>
+        <button
+          className="cta-button"
+          onClick={handlePrimaryActionClick}
+          aria-label="Make a digital portfolio"
+        >
+          {isAuthenticated ? "Go to Dashboard" : "Make a digital portfolio"}
+        </button>
       </motion.div>
       <motion.div
         className="testimonial-section"

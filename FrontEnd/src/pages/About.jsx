@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import "../styles/About.css";
 
 const About = () => {
+  const navigate = useNavigate();
+
   // Animation variants
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -62,6 +65,35 @@ const About = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Platform Statistics */}
+        <motion.div
+          className="platform-stats"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+        >
+          <h2>📊 Our Impact</h2>
+          <div className="stats-grid">
+            {[
+              { number: "12,000+", label: "Active Users" },
+              { number: "5,000+", label: "Portfolios Created" },
+              { number: "150+", label: "Countries Reached" },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                className="stat-item"
+                variants={fadeUp}
+                custom={i}
+                whileHover={{ scale: 1.05, rotate: 2 }}
+              >
+                <span className="stat-number">{stat.number}</span>
+                <span className="stat-label">{stat.label}</span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
         <motion.div
           className="about-features"
           initial="hidden"
@@ -90,6 +122,43 @@ const About = () => {
                 }}
               >
                 {feature}
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Technology Stack */}
+        <motion.div
+          className="tech-section"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+        >
+          <h2>⚙️ Built With Modern Technology</h2>
+          <p>
+            We use cutting-edge AI and web technologies to deliver the best
+            experience.
+          </p>
+          <div className="tech-grid">
+            {[
+              "React",
+              "Node.js",
+              "Gemini AI",
+              "NLP",
+              "Vercel",
+              "MongoDB",
+              "Express",
+              "Framer Motion",
+            ].map((tech, i) => (
+              <motion.div
+                key={i}
+                className="tech-card"
+                variants={fadeUp}
+                custom={i}
+                whileHover={{ scale: 1.1, rotate: 5 }}
+              >
+                {tech}
               </motion.div>
             ))}
           </div>
@@ -130,6 +199,56 @@ const About = () => {
             ))}
           </div>
         </motion.div>
+
+        {/* Testimonials Section */}
+        <motion.div
+          className="testimonials-section"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+        >
+          <h2>💬 What Our Users Say</h2>
+          <div className="testimonials-grid">
+            {[
+              {
+                name: "Sarah Johnson",
+                role: "Software Developer",
+                text: "ProFolio.AI helped me land my dream job! The AI-generated content was professional and impressive.",
+                rating: 5,
+              },
+              {
+                name: "Michael Chen",
+                role: "Design Student",
+                text: "As a student with no web dev experience, this was perfect. My portfolio looks amazing!",
+                rating: 5,
+              },
+              {
+                name: "Emily Rodriguez",
+                role: "Freelance Writer",
+                text: "Deployed my portfolio in under 5 minutes. The ease of use is incredible!",
+                rating: 5,
+              },
+            ].map((testimonial, i) => (
+              <motion.div
+                key={i}
+                className="testimonial-card"
+                variants={fadeUp}
+                custom={i}
+                whileHover={{ scale: 1.03 }}
+              >
+                <div className="stars">
+                  {"⭐".repeat(testimonial.rating)}
+                </div>
+                <p className="testimonial-text">"{testimonial.text}"</p>
+                <div className="testimonial-author">
+                  <strong>{testimonial.name}</strong>
+                  <span>{testimonial.role}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
         <motion.div
           className="about-cta"
           initial={{ opacity: 0 }}
@@ -155,6 +274,7 @@ const About = () => {
               duration: 2,
               ease: "easeInOut",
             }}
+            onClick={() => navigate("/generate-website")}
           >
             Get Started Now
           </motion.button>
