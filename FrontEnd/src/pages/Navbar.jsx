@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Navbar.css";
 
-const Navbar = ({ isAuthenticated = false, userName = "User", onLogout }) => {
+const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) => {
   const navigate = useNavigate();
   const handleLinkNavigation = (path, e) => {
     if (e) e.preventDefault();
@@ -23,7 +23,7 @@ const Navbar = ({ isAuthenticated = false, userName = "User", onLogout }) => {
           <div className="logo-bar"></div>
           <span className="logo-text">ProFolio.AI</span>
         </Link>
-        <button  
+        <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
@@ -140,7 +140,16 @@ const Navbar = ({ isAuthenticated = false, userName = "User", onLogout }) => {
                   aria-expanded="false"
                   aria-label="User menu"
                 >
-                  <i className="bi bi-person-circle fs-4 me-1"></i>{" "}
+                  {user?.profileImage ? (
+                    <img
+                      src={user.profileImage}
+                      alt={userName}
+                      className="rounded-circle me-1"
+                      style={{ width: "32px", height: "32px", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <i className="bi bi-person-circle fs-4 me-1"></i>
+                  )}
                 </a>
                 <ul
                   className="dropdown-menu dropdown-menu-end"

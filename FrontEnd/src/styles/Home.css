@@ -204,7 +204,7 @@ body {
 }
 
 /* Animated Gradient Text */
-.gradient-text {
+.home-gradient-text {
   background: linear-gradient(90deg,
       #ff4f00 0%,
       #ff8c00 25%,

@@ -99,7 +99,7 @@ function Home({ isAuthenticated, userName }) {
                 <span>Create Portfolios</span>
               </nav>
 
-              <h1 className="gradient-text">
+              <h1 className="home-gradient-text">
                 Online Portfolio
                 <br />
                 Creator

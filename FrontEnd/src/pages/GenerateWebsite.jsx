@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import "../styles/GenerateWebsite.css";
 import "../styles/EnhancedGenerateWebsite.css";
 import AIChatbot from "../components/AIChatbot";
+import DeploymentStatus from "../components/DeploymentStatus";
 
 // Import all template images
 import Template1 from "../assets/Template1.png";
@@ -432,11 +433,17 @@ const GenerateWebsite = () => {
   };
 
   // ... (handleSubmit and resetState remain same)
-  // ✅ UPDATED: Save deployed site to localStorage + show link
+  // ... inside GenerateWebsite component
+
+  // ✅ NEW: Deployment State
+  const [deploymentStep, setDeploymentStep] = useState(0);
+  const [deploymentUrl, setDeploymentUrl] = useState("");
+  const [deploymentError, setDeploymentError] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form before submission
+    // Validate form
     setShowValidation(true);
     if (!validateForm()) {
       setSubmitError("Please fill in all required fields correctly (Full Name and Email are required)");
@@ -444,11 +451,11 @@ const GenerateWebsite = () => {
       return;
     }
 
-    setIsSubmitting(true);
-    setSubmitError("");
+    setDeploymentStep(1); // Start: Creating Repo
+    setDeploymentError("");
 
     try {
-      // Transform Skills into Categories for Template 2
+      // Transform Skills
       const transformedSkills = [];
       const categories = {};
 
@@ -472,6 +479,19 @@ const GenerateWebsite = () => {
         skills: transformedSkills
       };
 
+      // Simulate Steps for UX (Real backend doesn't stream progress yet)
+      // We will update steps based on time or success for now
+
+      // Step 2: Pushing Files (Simulated delay after request start)
+      setTimeout(() => setDeploymentStep(2), 2000);
+
+      // Step 3: Creating Deployment (Simulated delay)
+      setTimeout(() => setDeploymentStep(3), 4000);
+
+      // Step 4: Waiting for Deployment (Simulated delay)
+      setTimeout(() => setDeploymentStep(4), 8000);
+
+      // Actual API Call
       const response = await axios.post(
         "http://localhost:8080/generator/generate-and-deploy",
         {
@@ -480,8 +500,15 @@ const GenerateWebsite = () => {
         }
       );
 
+      setDeploymentStep(5); // Checking Status
+
       if (response.data.success) {
         const deployedUrl = response.data.deploymentUrl;
+        const repoUrl = response.data.repoUrl; // Assuming backend returns this
+
+        // Final Step: Complete
+        setDeploymentUrl(deployedUrl);
+        setDeploymentStep(6);
 
         // 1️⃣ Create new site entry
         const newSite = {
@@ -489,46 +516,43 @@ const GenerateWebsite = () => {
           name: formData.personalInfo?.fullName?.trim()
             ? `${formData.personalInfo.fullName}'s Portfolio`
             : `Portfolio Site ${new Date().toLocaleDateString()}`,
-          createdAt: new Date().toISOString().split("T")[0], // YYYY-MM-DD
+          createdAt: new Date().toISOString().split("T")[0],
           status: "Deployed",
           link: deployedUrl,
         };
 
-        // 2️⃣ Read existing sites from localStorage
+        // 2️⃣ Save to localStorage
         let existingSites = [];
         try {
           const stored = localStorage.getItem("sites");
           if (stored) {
             existingSites = JSON.parse(stored);
-            if (!Array.isArray(existingSites)) {
-              existingSites = [];
-            }
           }
         } catch (err) {
-          console.error("Error reading sites from localStorage:", err);
-          existingSites = [];
+          console.error("Error reading sites:", err);
         }
-
-        // 3️⃣ Add new site and save back
         const updatedSites = [...existingSites, newSite];
         localStorage.setItem("sites", JSON.stringify(updatedSites));
 
-        // 4️⃣ Navigate to success page with deployment data
-        navigate('/success', {
-          state: {
-            deploymentUrl: deployedUrl,
-            repoUrl: response.data.repoUrl
-          }
-        });
+        // 3️⃣ Redirect to Success Page after short delay
+        setTimeout(() => {
+          navigate('/success', {
+            state: {
+              deploymentUrl: deployedUrl,
+              repoUrl: repoUrl
+            }
+          });
+        }, 1500); // 1.5s delay to let user see "Successful" message
+
       } else {
         throw new Error(response.data.message || "Deployment failed");
       }
     } catch (error) {
       console.error("❌ Error generating website:", error);
-      setSubmitError(error.message);
-    } finally {
-      setIsSubmitting(false);
+      setDeploymentError(error.message || "An unexpected error occurred.");
+      // Keep overlay open to show error
     }
+    // We don't set setIsSubmitting(false) to keep overlay if needed or we handle it in overlay
   };
 
   const resetState = () => {
@@ -789,6 +813,15 @@ const GenerateWebsite = () => {
       )}
       {selectedTemplate && (
         <AIChatbot selectedTemplate={selectedTemplate} formData={formData} />
+      )}
+
+      {/* Deployment Status Overlay */}
+      {deploymentStep > 0 && (
+        <DeploymentStatus
+          currentStep={deploymentStep}
+          deploymentUrl={deploymentUrl}
+          error={deploymentError}
+        />
       )}
     </div>
   );

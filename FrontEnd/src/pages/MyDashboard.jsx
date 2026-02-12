@@ -104,7 +104,8 @@ const MyDashboard = () => {
             hidden: {},
             visible: {
               transition: {
-                staggerChildren: 0.15
+                staggerChildren: 0.15,
+                delayChildren: 0.2
               }
             }
           }}
@@ -112,8 +113,13 @@ const MyDashboard = () => {
           <motion.div
             className="stat-card"
             variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5 } }
+              hidden: { opacity: 0, y: 30, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: { type: "spring", stiffness: 50, damping: 10 }
+              }
             }}
           >
             <h3>Total Portfolios</h3>
@@ -123,8 +129,13 @@ const MyDashboard = () => {
           <motion.div
             className="stat-card"
             variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5 } }
+              hidden: { opacity: 0, y: 30, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: { type: "spring", stiffness: 50, damping: 10 }
+              }
             }}
           >
             <h3>Total Views</h3>
@@ -134,8 +145,13 @@ const MyDashboard = () => {
           <motion.div
             className="stat-card"
             variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5 } }
+              hidden: { opacity: 0, y: 30, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: { type: "spring", stiffness: 50, damping: 10 }
+              }
             }}
           >
             <h3>Active Deployments</h3>

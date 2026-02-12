@@ -11,6 +11,24 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  bio: {
+    type: String,
+    default: "",
+  },
+  title: {
+    type: String,
+    default: "",
+  },
+  socialLinks: {
+    github: { type: String, default: "" },
+    linkedin: { type: String, default: "" },
+    twitter: { type: String, default: "" },
+    website: { type: String, default: "" },
+  },
+  profileImage: {
+    type: String,
+    default: "",
+  },
   password: {
     type: String,
     required: true,

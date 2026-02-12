@@ -36,7 +36,8 @@ function Login({ onLoginSuccess }) {
 
       if (result.success && result.jwtToken && result.name) {
         handleSuccess(result.message || "Login successful!");
-        onLoginSuccess(result.name, result.jwtToken);
+        handleSuccess(result.message || "Login successful!");
+        onLoginSuccess(result.name, result.jwtToken, result.user);
       } else {
         handleError(
           result.message || "Login failed. Please check your credentials."

@@ -27,6 +27,8 @@ import SuccessPage from "./pages/SuccessPage";
 import AIContentGeneration from "./pages/features/AIContentGeneration";
 import OneClickDeploy from "./pages/features/OneClickDeploy";
 
+import AccountSettings from "./pages/AccountSettings";
+
 const Dashboard = () => (
   <div className="container mt-3">
     <h2>User Dashboard</h2>
@@ -45,12 +47,7 @@ const FeaturesDeployment = () => (
     <p>Deploy your sites easily...</p>
   </div>
 );
-const AccountSettings = () => (
-  <div className="container mt-3">
-    <h2>Account Settings</h2>
-    <p>Manage your account details here.</p>
-  </div>
-);
+
 const CreateSite = () => (
   <div className="container mt-3">
     <h2>Create New Site</h2>
@@ -70,6 +67,7 @@ function App() {
     isAuthenticated: false,
     userName: "",
     token: null,
+    user: null,
   });
 
   const navigate = useNavigate();
@@ -83,12 +81,42 @@ function App() {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
 
-    if (token && user?.name) {
-      setAuthState({
+    if (token) {
+      // Set initial state from localStorage if available
+      setAuthState((prev) => ({
+        ...prev,
         isAuthenticated: true,
-        userName: user.name,
+        userName: user?.name || "",
         token: token,
-      });
+        user: user || {}, // Add user object to state
+      }));
+
+      // Fetch latest user data from backend
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, {
+        headers: {
+          Authorization: token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            const updatedUser = data.user;
+            localStorage.setItem("user", JSON.stringify(updatedUser)); // Sync localStorage
+            setAuthState((prev) => ({
+              ...prev,
+              isAuthenticated: true,
+              userName: updatedUser.name,
+              user: updatedUser,
+            }));
+          } else {
+            // If token is invalid/expired, logout
+            handleLogout();
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to fetch user:", err);
+          // Optionally rely on localStorage or logout if strict
+        });
     } else {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -96,6 +124,7 @@ function App() {
         isAuthenticated: false,
         userName: "",
         token: null,
+        user: null,
       });
     }
   }, []);
@@ -107,20 +136,32 @@ function App() {
       isAuthenticated: false,
       userName: "",
       token: null,
+      user: null
     });
     navigate("/home");
   };
 
-  const completeLogin = (name, token) => {
-    const userObj = { name };
+  const completeLogin = (name, token, userData) => {
+    // Ensure userData contains necessary profile info
+    const userObj = userData || { name };
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(userObj));
     setAuthState({
       isAuthenticated: true,
-      userName: name,
+      userName: userObj.name,
       token: token,
+      user: userObj
     });
     navigate("/dashboard");
+  };
+
+  const handleProfileUpdate = (updatedUser) => {
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    setAuthState(prev => ({
+      ...prev,
+      userName: updatedUser.name,
+      user: updatedUser
+    }));
   };
 
   return (
@@ -128,6 +169,7 @@ function App() {
       <Navbar
         isAuthenticated={authState.isAuthenticated}
         userName={authState.userName}
+        user={authState.user} // Pass full user object
         onLogout={handleLogout}
       />
       <ToastContainer
@@ -194,7 +236,7 @@ function App() {
             path="/account"
             element={
               <ProtectedRoute isAuthenticated={authState.isAuthenticated}>
-                <AccountSettings />
+                <AccountSettings onProfileUpdate={handleProfileUpdate} />
               </ProtectedRoute>
             }
           />

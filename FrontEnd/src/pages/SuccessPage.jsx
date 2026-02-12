@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
+import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/SuccessPage.css';
+import ParticleBackground from '../components/ParticleBackground';
 
 const SuccessPage = () => {
     const location = useLocation();
@@ -13,7 +15,7 @@ const SuccessPage = () => {
 
     useEffect(() => {
         // Hide confetti after animation
-        const timer = setTimeout(() => setShowConfetti(false), 3000);
+        const timer = setTimeout(() => setShowConfetti(false), 5000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -35,7 +37,6 @@ const SuccessPage = () => {
     };
 
     const shareToLinkedIn = () => {
-        const text = `Check out my new portfolio website! ${deploymentUrl}`;
         const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(deploymentUrl)}`;
         window.open(url, '_blank');
     };
@@ -48,47 +49,89 @@ const SuccessPage = () => {
 
     if (!deploymentUrl) return null;
 
+    // Animation Variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.3,
+                when: "beforeChildren"
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 40, scale: 0.95 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: { type: "spring", stiffness: 60, damping: 12 }
+        }
+    };
+
     return (
         <div className="success-page">
+            <ParticleBackground />
+
             {showConfetti && <div className="confetti-container"></div>}
 
-            <div className="success-content">
+            <motion.div
+                className="success-content"
+                initial="hidden"
+                animate="visible"
+                variants={containerVariants}
+            >
                 {/* Animated Success Icon */}
-                <div className="success-icon-wrapper">
-                    <div className="success-icon">
+                <motion.div className="success-icon-wrapper" variants={itemVariants}>
+                    <motion.div
+                        className="success-icon"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.3 }}
+                    >
                         <i className="bx bx-check"></i>
-                    </div>
+                    </motion.div>
                     <div className="success-ring"></div>
-                </div>
+                </motion.div>
 
                 {/* Main Heading */}
-                <h1 className="success-title">
-                    🎉 Portfolio Deployed Successfully!
-                </h1>
-                <p className="success-subtitle">
-                    Your portfolio is now live and ready to share with the world
-                </p>
+                <motion.h1 className="success-title" variants={itemVariants}>
+                    <span className="gradient-text">Portfolio Live!</span>
+                </motion.h1>
+                <motion.p className="success-subtitle" variants={itemVariants}>
+                    Your digital presence has been successfully launched.
+                </motion.p>
 
                 {/* Main Card with QR Code and URL */}
-                <div className="deployment-card">
+                <motion.div className="deployment-card glass-panel" variants={itemVariants}>
                     <div className="qr-section">
-                        <div className="qr-code-wrapper">
-                            <QRCodeSVG
-                                value={deploymentUrl}
-                                size={180}
-                                level="H"
-                                includeMargin={true}
-                                bgColor="#ffffff"
-                                fgColor="#667eea"
+                        <div className="qr-code-scan-container">
+                            <div className="qr-code-wrapper">
+                                <QRCodeSVG
+                                    value={deploymentUrl}
+                                    size={160}
+                                    level="H"
+                                    includeMargin={true}
+                                    bgColor="#ffffff"
+                                    fgColor="#2d3748"
+                                />
+                            </div>
+                            <motion.div
+                                className="scan-line"
+                                animate={{ top: ['0%', '100%', '0%'] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                             />
                         </div>
                         <p className="qr-label">
-                            <i className="bx bx-mobile"></i> Scan with mobile
+                            <i className="bx bx-scan"></i> Scan to Preview
                         </p>
                     </div>
 
                     <div className="url-section">
-                        <h3>Your Live Website</h3>
+                        <h3>Your Live URL</h3>
                         <div className="url-display-wrapper">
                             <div className="url-display">
                                 <input
@@ -97,126 +140,106 @@ const SuccessPage = () => {
                                     value={deploymentUrl}
                                     className="url-input"
                                 />
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={copyToClipboard}
                                     className={`copy-btn ${copied ? 'copied' : ''}`}
                                     title="Copy URL"
                                 >
                                     <i className={`bx ${copied ? 'bx-check' : 'bx-copy'}`}></i>
-                                    {copied ? 'Copied!' : 'Copy'}
-                                </button>
+                                </motion.button>
                             </div>
                         </div>
                         <div className="primary-actions">
-                            <a
+                            <motion.a
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
                                 href={deploymentUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="btn btn-primary"
+                                className="btn btn-primary btn-glow"
                             >
-                                <i className="bx bx-link-external"></i> View Website
-                            </a>
+                                <i className="bx bx-rocket"></i> Launch Website
+                            </motion.a>
                             {repoUrl && (
-                                <a
+                                <motion.a
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
                                     href={repoUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="btn btn-secondary"
                                 >
-                                    <i className="bx bxl-github"></i> View Code
-                                </a>
+                                    <i className="bx bxl-github"></i> Source Code
+                                </motion.a>
                             )}
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Info Grid */}
-                <div className="info-grid">
-                    <div className="info-card">
-                        <div className="info-icon">
-                            <i className="bx bxl-github"></i>
-                        </div>
-                        <h4>GitHub Hosted</h4>
-                        <p>Source code stored safely</p>
-                    </div>
-
-                    <div className="info-card">
-                        <div className="info-icon">
-                            <i className="bx bx-rocket"></i>
-                        </div>
-                        <h4>Vercel Deployed</h4>
-                        <p>Lightning-fast CDN</p>
-                    </div>
-
-                    <div className="info-card">
-                        <div className="info-icon">
-                            <i className="bx bx-mobile"></i>
-                        </div>
-                        <h4>Mobile Optimized</h4>
-                        <p>Fully responsive design</p>
-                    </div>
-
-                    <div className="info-card">
-                        <div className="info-icon">
-                            <i className="bx bx-shield-alt-2"></i>
-                        </div>
-                        <h4>HTTPS Secure</h4>
-                        <p>SSL certificate included</p>
-                    </div>
-                </div>
+                <motion.div className="info-grid" variants={containerVariants}>
+                    {[
+                        { icon: 'bxl-github', title: 'GitHub Hosted', desc: 'Secure Version Control' },
+                        { icon: 'bx-cloud-lightning', title: 'Vercel Deployed', desc: 'Global CDN Speed' },
+                        { icon: 'bx-devices', title: 'Responsive', desc: 'Mobile Optimized' },
+                        { icon: 'bx-lock-alt', title: 'SSL Secure', desc: 'HTTPS Encryption' }
+                    ].map((item, index) => (
+                        <motion.div
+                            key={index}
+                            className="info-card glass-panel-sm"
+                            variants={itemVariants}
+                            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                        >
+                            <div className="info-icon">
+                                <i className={`bx ${item.icon}`}></i>
+                            </div>
+                            <h4>{item.title}</h4>
+                            <p>{item.desc}</p>
+                        </motion.div>
+                    ))}
+                </motion.div>
 
                 {/* Share Section */}
-                <div className="share-section">
-                    <h3>Share Your Portfolio</h3>
+                <motion.div className="share-section glass-panel" variants={itemVariants}>
+                    <h3>Share Your Achievement</h3>
                     <div className="share-buttons">
-                        <button onClick={shareToLinkedIn} className="share-btn linkedin">
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={shareToLinkedIn}
+                            className="share-btn linkedin"
+                        >
                             <i className="bx bxl-linkedin"></i> LinkedIn
-                        </button>
-                        <button onClick={shareToTwitter} className="share-btn twitter">
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={shareToTwitter}
+                            className="share-btn twitter"
+                        >
                             <i className="bx bxl-twitter"></i> Twitter
-                        </button>
+                        </motion.button>
                     </div>
-                </div>
-
-                {/* Next Steps */}
-                <div className="next-steps">
-                    <h3>What's Next?</h3>
-                    <div className="steps-grid">
-                        <div className="step-item">
-                            <span className="step-number">1</span>
-                            <p>Share your portfolio on social media</p>
-                        </div>
-                        <div className="step-item">
-                            <span className="step-number">2</span>
-                            <p>Add it to your resume and job applications</p>
-                        </div>
-                        <div className="step-item">
-                            <span className="step-number">3</span>
-                            <p>Connect a custom domain in Vercel (optional)</p>
-                        </div>
-                        <div className="step-item">
-                            <span className="step-number">4</span>
-                            <p>Update content anytime by regenerating</p>
-                        </div>
-                    </div>
-                </div>
+                </motion.div>
 
                 {/* Action Buttons */}
-                <div className="bottom-actions">
+                <motion.div className="bottom-actions" variants={itemVariants}>
                     <button
                         onClick={() => navigate('/generate')}
                         className="btn btn-outline"
                     >
-                        <i className="bx bx-plus"></i> Create Another
+                        <i className="bx bx-plus-circle"></i> New Project
                     </button>
                     <button
                         onClick={() => navigate('/dashboard')}
                         className="btn btn-primary"
                     >
-                        <i className="bx bx-home"></i> Go to Dashboard
+                        <i className="bx bxs-dashboard"></i> Dashboard
                     </button>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     );
 };
