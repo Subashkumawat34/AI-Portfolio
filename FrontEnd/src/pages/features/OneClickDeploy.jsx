@@ -7,180 +7,31 @@ const OneClickDeploy = () => {
   const navigate = useNavigate();
   return (
     <div className="feature-page-container">
+      {/* Hero Section */}
       <motion.header
         className="feature-hero deploy"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <motion.h1
-          initial={{ y: -30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-        >
-          One-Click Portfolio Deployment
-        </motion.h1>
-        <motion.p
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-        >
-          Launch your AI-generated portfolio online instantly with our automated
-          deployment pipeline — GitHub + Vercel integration built-in.
-        </motion.p>
-      </motion.header>
-      <motion.section
-        className="feature-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-      >
-        <h2>Seamless Hosting Experience</h2>
-        <p>
-          Forget about manual coding, servers, or FTP uploads. Your portfolio is
-          automatically hosted on Vercel’s global CDN with GitHub version
-          control.
-        </p>
-        <motion.ul
-          className="ai-benefits-list"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.2 } },
-          }}
-        >
-          {[
-            "⚡ Instant live preview before publishing",
-            "🔒 HTTPS and SSL security by default",
-            "🌍 Global CDN ensures blazing-fast performance",
-            "📈 Scales automatically to handle recruiter traffic",
-            "💾 GitHub backup for safe storage & collaboration",
-            "📊 Built-in analytics to track visitors",
-          ].map((item, i) => (
-            <motion.li
-              key={i}
-              variants={{
-                hidden: { opacity: 0, x: i % 2 === 0 ? -40 : 40 },
-                visible: { opacity: 1, x: 0 },
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              {item}
-            </motion.li>
-          ))}
-        </motion.ul>
-      </motion.section>
-
-      {/* Performance Metrics */}
-      <motion.section
-        className="stats-section"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        {[
-          { number: "< 60s", label: "Deploy Time" },
-          { number: "99.9%", label: "Uptime" },
-          { number: "Global", label: "CDN Coverage" },
-        ].map((stat, index) => (
-          <motion.div
-            key={index}
-            className="stat-card"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.2, duration: 0.6 }}
-            whileHover={{ scale: 1.05 }}
-          >
-            <span className="stat-number">{stat.number}</span>
-            <span className="stat-label">{stat.label}</span>
-          </motion.div>
-        ))}
-      </motion.section>
+        <motion.h1
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          One-Click Deployment
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          Push your portfolio to the live web instantly.
+          Powered by GitHub and Vercel for scalable, secure hosting.
+        </motion.p>
+      </motion.header>
 
-      {/* Technology Stack */}
-      <motion.section
-        className="feature-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-      >
-        <h2>🚀 Powered By Industry Leaders</h2>
-        <p>
-          We leverage the best technologies to ensure your portfolio is fast,
-          secure, and always available.
-        </p>
-        <motion.div
-          className="tech-stack"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
-        >
-          {["GitHub", "Vercel", "CDN", "HTTPS/SSL", "Auto-Scaling"].map(
-            (tech, i) => (
-              <motion.div
-                key={i}
-                className="tech-badge"
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                whileHover={{ scale: 1.1 }}
-              >
-                {tech}
-              </motion.div>
-            )
-          )}
-        </motion.div>
-      </motion.section>
-      <motion.section
-        className="feature-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-      >
-        <h2>Deploy in Three Steps</h2>
-        <motion.div
-          className="step-list"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.25 } },
-          }}
-        >
-          {[
-            "Finalize your portfolio with AI-enhanced content.",
-            "Click Deploy Now — our system pushes your code to GitHub and connects to Vercel.",
-            "Get a live link instantly — share it with recruiters, clients, or peers.",
-          ].map((step, i) => (
-            <motion.div
-              className="step"
-              key={i}
-              variants={{
-                hidden: { opacity: 0, rotateY: 90 },
-                visible: { opacity: 1, rotateY: 0 },
-              }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              whileHover={{ scale: 1.05 }}
-            >
-              <span>{`${i + 1}️⃣`}</span>
-              <p>{step}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
+      {/* Intro */}
       <motion.section
         className="feature-section"
         initial={{ opacity: 0, y: 30 }}
@@ -188,59 +39,168 @@ const OneClickDeploy = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        <h2>Manage & Update Easily</h2>
+        <h2>Global Scale, Zero Config</h2>
         <p>
-          Updating your portfolio is simple: re-upload your resume or add new
-          inputs, and redeploy with one click. Stay current without technical
-          hassle.
+          Forget FTP and complex server setups. We handle the heavy lifting so you
+          can focus on showcasing your best work.
         </p>
+
         <motion.ul
           className="ai-benefits-list"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.2 } },
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 },
+            },
           }}
         >
           {[
-            "📝 Edit content anytime with AI suggestions",
-            "🚀 Re-deploy updated versions instantly",
-            "👩‍💻 Maintain multiple portfolio versions",
-            "📂 Auto-save to GitHub for safe versioning",
-          ].map((item, i) => (
+            { text: "Instant HTTPS & SSL", icon: "🔒" },
+            { text: "Global CDN Delivery", icon: "🌍" },
+            { text: "Automated Git Backups", icon: "💾" },
+            { text: "Live Preview URL", icon: "👁️" },
+            { text: "DDoS Protection", icon: "🛡️" },
+            { text: "Custom Domain Support", icon: "🔗" },
+          ].map((benefit, index) => (
             <motion.li
-              key={i}
+              key={index}
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },
               }}
-              transition={{ duration: 0.5 }}
             >
-              {item}
+              <span>{benefit.icon}</span> {benefit.text}
             </motion.li>
           ))}
         </motion.ul>
       </motion.section>
+
+      {/* Stats Section */}
+      <motion.div
+        className="stats-section"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        {[
+          { number: "< 60s", label: "Deploy Time" },
+          { number: "99.9%", label: "Uptime SLA" },
+          { number: "100+", label: "Edge Locations" },
+        ].map((stat, index) => (
+          <motion.div
+            key={index}
+            className="stat-card"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <span className="stat-number">{stat.number}</span>
+            <span className="stat-label">{stat.label}</span>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Tech Stack */}
+      <motion.section
+        className="feature-section"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        <h2>The Power Stack</h2>
+        <p>
+          Built on top of the world's most reliable infrastructure.
+        </p>
+        <motion.div
+          className="tech-stack"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 },
+            },
+          }}
+        >
+          {["Vercel", "GitHub", "React", "Node.js", "Cloudflare CDN"].map((tech, index) => (
+            <motion.div
+              key={index}
+              className="tech-badge"
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1 },
+              }}
+            >
+              {tech}
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.section>
+
+      {/* Deployment Steps */}
+      <motion.section
+        className="feature-section"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        <h2>Three Steps to Live</h2>
+        <motion.div
+          className="step-list"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.2 },
+            },
+          }}
+        >
+          {[
+            "Review your generated portfolio content in the dashboard.",
+            "Click 'Deploy Now' to initialize the automated build pipeline.",
+            "Receive your unique URL instantly and share it with the world.",
+          ].map((step, index) => (
+            <motion.div
+              className="step"
+              key={index}
+              variants={{
+                hidden: { opacity: 0, x: -20 },
+                visible: { opacity: 1, x: 0 },
+              }}
+            >
+              <span>{index + 1}</span>
+              <p>{step}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.section>
+
+      {/* CTA */}
       <motion.section
         className="feature-highlight"
-        initial={{ opacity: 0, scale: 0.8 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: 0.6 }}
       >
-        <h2>Go Live in Seconds</h2>
+        <h2>Go Live Today</h2>
         <p>
-          From resume to live professional portfolio in just a few minutes —
-          that’s the power of AI + automation.
+          Don't let technical hurdles hold you back. Launch your professional brand now.
         </p>
         <motion.button
           className="primary-btn"
-          whileHover={{
-            scale: 1.07,
-            boxShadow: "0px 0px 18px rgba(243,156,18,0.6)",
-          }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/generate-website")}
         >

@@ -2,8 +2,8 @@
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
   animation: slideDownNav 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -18,7 +18,7 @@
   font-weight: 600;
   position: relative;
   transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 50px;
   /* Pill shape for morphic effect */
 }
@@ -201,21 +201,97 @@
 
 @media (max-width: 991px) {
   .navbar-custom {
-    padding: 0.5rem 1rem;
-    background: white;
-    /* Solid background for mobile */
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    /* High opacity */
+    backdrop-filter: blur(20px);
   }
 
   .navbar-collapse {
     background: white;
-    padding: 1rem;
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    max-height: 80vh;
+    /* Scrollable if too tall */
+    overflow-y: auto;
+  }
+
+  .navbar-container-custom {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  /* Ensure items stack nicely */
+  .navbar-nav.left-nav,
+  .navbar-nav.right-nav {
+    width: 100%;
+  }
+
+  .navbar-custom .nav-item {
+    width: 100%;
+    margin: 0;
+  }
+
+  .navbar-custom .nav-link {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    margin: 4px 0;
+    border-radius: 12px;
+    text-align: left;
+    /* Verify alignment */
+  }
+
+  .navbar-custom .nav-link:hover {
+    background-color: rgba(255, 79, 0, 0.05);
+    transform: translateX(5px);
+    /* Slide right hint */
+    box-shadow: none;
+  }
+
+  /* Dropdown adjustments for mobile */
+  .navbar-custom .dropdown-menu {
+    border: none;
+    box-shadow: none;
+    padding-left: 1.5rem;
+    background: transparent;
+    margin-top: 0;
+    animation: none;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    display: none;
+    /* Bootstrap handles display */
+  }
+
+  .navbar-custom .dropdown-menu.show {
+    display: block;
+  }
+
+  .navbar-custom .dropdown-item {
+    padding: 0.6rem 1rem;
+  }
+
+  /* Separator for right nav */
+  .navbar-nav.right-nav {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
   }
 
   .navbar-custom .nav-link::after {
     display: none;
-    /* No underline anim on mobile */
+  }
+
+  /* Reset animations for mobile elements to prevent visibility issues */
+  .navbar-custom .left-nav>.nav-item,
+  .navbar-custom .right-nav>.nav-item {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

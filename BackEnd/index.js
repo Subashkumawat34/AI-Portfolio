@@ -52,6 +52,8 @@ const ChatbotRouter = require("./Routes/chatbot.routes");
 app.use("/auth", AuthRouter);
 app.use("/generator", GeneratorRouter);
 app.use("/api/chatbot", ChatbotRouter);
+const PaymentRouter = require("./Routes/PaymentRouter");
+app.use("/payment", PaymentRouter);
 app.use("/", resumeRoute); // Handles resume uploads or extraction
 
 // ✅ Global error handler

@@ -1,331 +1,493 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import "../styles/Home.css";
-import { Button } from "react-bootstrap";
-import SchoolImage from "../assets/school-image.jpg";
-import Section1 from "../assets/section1.png";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import ParticleBackground from "../components/ParticleBackground";
+// Import assets
+import HeroImage from "../assets/section1.png";
+import Feature1 from "../assets/CreateIcon.png";
+import Feature2 from "../assets/DeployIcon.png";
+import Feature3 from "../assets/EditIcon.png";
+import Template1 from "../assets/Template1.png";
+import Template2 from "../assets/Template2.png";
+import Template3 from "../assets/Template3.png";
+import Template4 from "../assets/Template4.png";
+import Template5 from "../assets/Template5.png";
+import Template6 from "../assets/Template6.png";
+import Customised from "../assets/Customised.jpg";
 
-function Home({ isAuthenticated, userName }) {
-  const navigate = useNavigate();
+const Home = ({ isAuthenticated, userName }) => {
+    const navigate = useNavigate();
 
-  // Stats counter state
-  const [stats, setStats] = useState({
-    portfolios: 0,
-    users: 0,
-    deployments: 0
-  });
+    // FAQ State
+    const [activeIndex, setActiveIndex] = useState(null);
 
-  // Animate counters on mount
-  useEffect(() => {
-    const targets = { portfolios: 5000, users: 12000, deployments: 8000 };
-    const duration = 2000; // 2 seconds
-    const steps = 60;
-    const interval = duration / steps;
-    let currentStep = 0;
+    const toggleFAQ = (index) => {
+        setActiveIndex(activeIndex === index ? null : index);
+    };
 
-    const timer = setInterval(() => {
-      currentStep++;
-      const progress = currentStep / steps;
+    const handleGetStarted = () => {
+        if (isAuthenticated) {
+            navigate("/dashboard");
+        } else {
+            navigate("/signup");
+        }
+    };
 
-      setStats({
-        portfolios: Math.floor(targets.portfolios * progress),
-        users: Math.floor(targets.users * progress),
-        deployments: Math.floor(targets.deployments * progress)
-      });
+    const templates = [Template1, Template2, Template3, Template4, Template5, Template6];
 
-      if (currentStep >= steps) {
-        clearInterval(timer);
-        setStats(targets);
-      }
-    }, interval);
+    const faqs = [
+        {
+            question: "Is it really free to generate a website?",
+            answer: "Yes! You can generate a basic portfolio website for free. We also offer premium templates and advanced features for power users."
+        },
+        {
+            question: "Do I need coding skills?",
+            answer: "Not at all. Our AI handles all the code generation. You just provide your details or upload your resume, and we build the site for you."
+        },
+        {
+            question: "Can I host the website on my own domain?",
+            answer: "Yes, you can download the source code and host it anywhere, or use our one-click deployment to Vercel/GitHub."
+        },
+        {
+            question: "How does the AI content generation work?",
+            answer: "We use advanced LLMs to analyze your profile and generate professional, SEO-optimized content tailored to your industry."
+        }
+    ];
 
-    return () => clearInterval(timer);
-  }, []);
+    // Animation Variants
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    };
 
-  const handleHowItWorksClick = () => {
-    navigate("/how-it-works");
-  };
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2
+            }
+        }
+    };
 
-  const handlePrimaryActionClick = () => {
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    } else {
-      navigate("/signup");
-    }
-  };
+    const scaleUp = {
+        hidden: { opacity: 0, scale: 0.9 },
+        visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+    };
 
-  // Animation Variants
-  const fadeUp = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
-  };
+    return (
+        <div className="page-container">
+            {/* HERO SECTION */}
+            <section className="hero-section">
+                <div className="content-wrapper">
+                    <motion.div
+                        className="left-col"
+                        initial="hidden"
+                        animate="visible"
+                        variants={staggerContainer}
+                    >
+                        <motion.div className="breadcrumb" variants={fadeInUp}>
+                            <span>AI-POWERED</span>
+                            <span>•</span>
+                            <span>PORTFOLIO BUILDER</span>
+                        </motion.div>
+                        <motion.h1 variants={fadeInUp}>
+                            Build Your <span className="home-gradient-text">Dream Portfolio</span> <br />
+                            in Seconds with AI
+                        </motion.h1>
+                        <motion.p className="subheading" variants={fadeInUp}>
+                            Transform your resume into a stunning, professional website effortlessly.
+                            No coding required. Just upload, customize, and deploy.
+                        </motion.p>
+                        <motion.div className="button-group" variants={fadeInUp}>
+                            <button onClick={handleGetStarted} className="cta-btn">
+                                {isAuthenticated ? `Go To Dashboard` : "Get Started"}
+                            </button>
+                            <Link to="/how-it-works" className="link-btn">
+                                How it Works
+                            </Link>
+                        </motion.div>
+                    </motion.div>
 
-  const fadeLeft = {
-    hidden: { opacity: 0, x: -80 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.8 } },
-  };
+                    <motion.div
+                        className="right-col"
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                        <div className="image-card">
+                            <img src={HeroImage} alt="AI Website Builder Preview" className="responsive-image" />
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
 
-  const fadeRight = {
-    hidden: { opacity: 0, x: 80 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.8 } },
-  };
+            {/* MARQUEE */}
+            <div className="marquee-container">
+                <div className="marquee-content">
+                    <div className="marquee-item"><i className="bi bi-code-slash"></i> React</div>
+                    <div className="marquee-item"><i className="bi bi-filetype-html"></i> HTML5</div>
+                    <div className="marquee-item"><i className="bi bi-filetype-css"></i> CSS3</div>
+                    <div className="marquee-item"><i className="bi bi-box-seam"></i> Parcel</div>
+                    <div className="marquee-item"><i className="bi bi-github"></i> GitHub</div>
+                    <div className="marquee-item"><i className="bi bi-hdd-network"></i> Vercel</div>
+                    <div className="marquee-item"><i className="bi bi-lightning-charge"></i> Vite</div>
+                    <div className="marquee-item"><i className="bi bi-bootstrap"></i> Bootstrap</div>
+                    {/* Duplicate for seamless loop */}
+                    <div className="marquee-item"><i className="bi bi-code-slash"></i> React</div>
+                    <div className="marquee-item"><i className="bi bi-filetype-html"></i> HTML5</div>
+                    <div className="marquee-item"><i className="bi bi-filetype-css"></i> CSS3</div>
+                    <div className="marquee-item"><i className="bi bi-box-seam"></i> Parcel</div>
+                    <div className="marquee-item"><i className="bi bi-github"></i> GitHub</div>
+                    <div className="marquee-item"><i className="bi bi-hdd-network"></i> Vercel</div>
+                    <div className="marquee-item"><i className="bi bi-lightning-charge"></i> Vite</div>
+                    <div className="marquee-item"><i className="bi bi-bootstrap"></i> Bootstrap</div>
+                </div>
+            </div>
 
-  const stagger = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  return (
-    <>
-      <ParticleBackground />
-      <div className="page-container">
-        <motion.div
-          className="hero-section"
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-        >
-          <div className="content-wrapper">
-            <motion.div className="left-col" variants={fadeLeft}>
-              <nav className="breadcrumb" aria-label="Breadcrumb">
-                <a href="/">Home</a>
-                <span aria-hidden="true">›</span>
-                <span>Create Portfolios</span>
-              </nav>
-
-              <h1 className="home-gradient-text">
-                Online Portfolio
-                <br />
-                Creator
-              </h1>
-
-              <p className="subheading">
-                Build and deploy a professional portfolio in minutes —
-                templates, drag-and-drop editor and one-click deployment.
-              </p>
-
-              <div className="button-group">
-                <Button
-                  className="cta-btn"
-                  onClick={handlePrimaryActionClick}
-                  aria-label="Create portfolio"
+            {/* STATS */}
+            <div className="stats-wrapper">
+                <motion.section
+                    className="stats-section"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerContainer}
                 >
-                  {isAuthenticated
-                    ? "Go to Dashboard"
-                    : "Create a portfolio website"}
-                </Button>
+                    <motion.div className="stat-box" variants={scaleUp}>
+                        <span className="stat-number">1000+</span>
+                        <span className="stat-label">Websites Created</span>
+                    </motion.div>
+                    <motion.div className="stat-box" variants={scaleUp}>
+                        <span className="stat-number">50+</span>
+                        <span className="stat-label">Templates</span>
+                    </motion.div>
+                    <motion.div className="stat-box" variants={scaleUp}>
+                        <span className="stat-number">5s</span>
+                        <span className="stat-label">Generation Time</span>
+                    </motion.div>
+                    <motion.div className="stat-box" variants={scaleUp}>
+                        <span className="stat-number">4.9/5</span>
+                        <span className="stat-label">User Rating</span>
+                    </motion.div>
+                </motion.section>
+            </div>
 
-                <Button
-                  variant="link"
-                  className="link-btn"
-                  onClick={handleHowItWorksClick}
-                  aria-label="See how it works"
+            {/* TEMPLATE SHOWCASE */}
+            <section className="template-showcase-section">
+                <motion.h2
+                    className="section-title"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                 >
-                  See How it Works
-                </Button>
-              </div>
-            </motion.div>
+                    Stunning Templates for Every Profession
+                </motion.h2>
+                <motion.p
+                    className="section-subtitle"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                >
+                    Choose from a wide variety of professionally designed, responsive templates.
+                </motion.p>
 
-            <motion.div
-              className="right-col"
-              variants={fadeRight}
-              aria-hidden="true"
+                <div className="template-scroll-container">
+                    <motion.div
+                        className="template-track"
+                        initial={{ x: 0 }}
+                        animate={{ x: "-50%" }}
+                        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                    >
+                        {[...templates, ...templates].map((template, index) => (
+                            <div key={index} className="template-card">
+                                <img src={template} alt={`Template ${index + 1}`} className="template-img" />
+                                <div className="template-overlay">
+                                    <button onClick={handleGetStarted} className="preview-btn">View Template</button>
+                                </div>
+                            </div>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* FEATURE DEEP DIVES */}
+            <section className="deep-dive-section">
+                {/* Feature 1: AI Writing */}
+                <motion.div
+                    className="deep-dive-row"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-100px" }}
+                    variants={staggerContainer}
+                >
+                    <div className="row-bg-overlay" style={{ backgroundImage: `url(${Feature1})` }}></div>
+                    <motion.div className="deep-dive-content" variants={fadeInUp}>
+                        <div className="icon-badge"><img src={Feature1} alt="Create" /></div>
+                        <h2>AI-Powered Writing Assistant</h2>
+                        <p>
+                            Struggling with what to write? Our advanced AI analyzes your role and industry to generate professional bios, project descriptions, and skill summaries instantly.
+                        </p>
+                        <ul className="feature-list">
+                            <li><i className="bi bi-check-circle-fill"></i> SEO-optimized content</li>
+                            <li><i className="bi bi-check-circle-fill"></i> Industry-specific terminology</li>
+                            <li><i className="bi bi-check-circle-fill"></i> Tone adjustment</li>
+                        </ul>
+                    </motion.div>
+                    <motion.div className="deep-dive-image" variants={fadeInUp}>
+                        {/* Placeholder for a UI mockup of AI writing */}
+                        <div className="ui-mockup-card">
+                            <div className="mockup-header">
+                                <span className="dot red"></span><span className="dot yellow"></span><span className="dot green"></span>
+                            </div>
+                            <div className="mockup-body">
+                                <div className="typing-indicator">AI is writing your bio...</div>
+                                <div className="generated-text">
+                                    "Passionate Full Stack Developer with 5+ years of experience in building scalable web applications..."
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </motion.div>
+
+                {/* Feature 2: Customization */}
+                <motion.div
+                    className="deep-dive-row reverse"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-100px" }}
+                    variants={staggerContainer}
+                >
+                    <div className="row-bg-overlay" style={{ backgroundImage: `url(${Customised})` }}></div>
+                    <motion.div className="deep-dive-image" variants={fadeInUp}>
+                        <img src={Customised} alt="Customization" className="feature-highlight-img" />
+                    </motion.div>
+                    <motion.div className="deep-dive-content" variants={fadeInUp}>
+                        <div className="icon-badge"><img src={Feature3} alt="Edit" /></div>
+                        <h2>Real-Time Customization</h2>
+                        <p>
+                            Make it truly yours. Tweak colors, fonts, and layouts in real-time without touching a single line of code.
+                        </p>
+                        <ul className="feature-list">
+                            <li><i className="bi bi-check-circle-fill"></i> Live preview</li>
+                            <li><i className="bi bi-check-circle-fill"></i> Custom color palettes</li>
+                            <li><i className="bi bi-check-circle-fill"></i> Drag-and-drop ordering</li>
+                        </ul>
+                    </motion.div>
+                </motion.div>
+
+                {/* Feature 3: Deployment */}
+                <motion.div
+                    className="deep-dive-row"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-100px" }}
+                    variants={staggerContainer}
+                >
+                    <div className="row-bg-overlay" style={{ backgroundImage: `url(${Feature2})` }}></div>
+                    <motion.div className="deep-dive-content" variants={fadeInUp}>
+                        <div className="icon-badge"><img src={Feature2} alt="Deploy" /></div>
+                        <h2>One-Click Global Deployment</h2>
+                        <p>
+                            Push your portfolio to the world instantly. We integrate deeply with GitHub and Vercel for free, SSL-secured hosting.
+                        </p>
+                        <ul className="feature-list">
+                            <li><i className="bi bi-check-circle-fill"></i> Free .vercel.app domain</li>
+                            <li><i className="bi bi-check-circle-fill"></i> Automated CI/CD pipelines</li>
+                            <li><i className="bi bi-check-circle-fill"></i> SSL Security included</li>
+                        </ul>
+                    </motion.div>
+                    <motion.div className="deep-dive-image" variants={fadeInUp}>
+                        <div className="deployment-card">
+                            <div className="deploy-status success">
+                                <i className="bi bi-check-circle"></i> Deployment Successful
+                            </div>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            </section>
+
+            {/* BENTO GRID SUMMARY */}
+            <section className="bento-grid">
+                <div className="bento-item bento-large">
+                    <i className="bi bi-stars bento-icon"></i>
+                    <h3 className="bento-title">Smart Resume Parser</h3>
+                    <p className="bento-desc">
+                        Upload your existing PDF resume and watch as we extract skills, education, and experience to populate your site automatically.
+                    </p>
+                </div>
+                <div className="bento-item">
+                    <i className="bi bi-shield-lock bento-icon"></i>
+                    <h3 className="bento-title">Secure & Private</h3>
+                    <p className="bento-desc">Your data is yours. We don't store your personal info longer than needed.</p>
+                </div>
+                <div className="bento-item bento-tall">
+                    <i className="bi bi-palette bento-icon"></i>
+                    <h3 className="bento-title">Premium Designs</h3>
+                    <p className="bento-desc">
+                        Access a growing library of high-quality designs that stand out to recruiters.
+                    </p>
+                </div>
+                <div className="bento-item">
+                    <i className="bi bi-phone bento-icon"></i>
+                    <h3 className="bento-title">Mobile First</h3>
+                    <p className="bento-desc">100% responsive designs that look perfect on any device.</p>
+                </div>
+                <div className="bento-item">
+                    <i className="bi bi-graph-up bento-icon"></i>
+                    <h3 className="bento-title">Analytics Ready</h3>
+                    <p className="bento-desc">Integrate Google Analytics to track who visits your portfolio.</p>
+                </div>
+            </section>
+
+            {/* TARGET AUDIENCE */}
+            <section className="audience-section">
+                <motion.h2
+                    className="section-title"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                >
+                    Built For Everyone
+                </motion.h2>
+                <div className="audience-grid">
+                    <motion.div className="audience-card" whileHover={{ y: -10 }}>
+                        <div className="audience-icon"><i className="bi bi-code-square"></i></div>
+                        <h3>Developers</h3>
+                        <p>Showcase your GitHub repos, live projects, and tech stack with dedicated code-friendly sections.</p>
+                    </motion.div>
+                    <motion.div className="audience-card" whileHover={{ y: -10 }}>
+                        <div className="audience-icon"><i className="bi bi-briefcase"></i></div>
+                        <h3>Job Seekers</h3>
+                        <p>Stand out from the pile of resumes with a personal brand website that highlights your soft skills.</p>
+                    </motion.div>
+                    <motion.div className="audience-card" whileHover={{ y: -10 }}>
+                        <div className="audience-icon"><i className="bi bi-bezier2"></i></div>
+                        <h3>Designers</h3>
+                        <p>Let your visual work speak for itself with image-heavy galleries and clean, minimal layouts.</p>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* CTA BANNER */}
+            <motion.section
+                className="cta-banner"
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
             >
-              <div className="image-card">
-                <img
-                  src={SchoolImage}
-                  alt="Portfolio preview on a laptop"
-                  className="responsive-image"
-                  loading="lazy"
-                />
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
+                <h2>Ready to Showcase Your Work?</h2>
+                <motion.button
+                    onClick={handleGetStarted}
+                    className="cta-button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    Create Your Portfolio Now
+                </motion.button>
+            </motion.section>
 
-        <motion.div
-          className="features-row"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={stagger}
-        >
-          {[
-            { icon: "🧩", text: "Easy drag-and-drop editor" },
-            { icon: "🖼️", text: "3M+ free stock photos and graphics" },
-            { icon: "✨", text: "Generate content and media with AI" },
-            { icon: "🔗", text: "Download or share designs easily" },
-          ].map((f, i) => (
-            <motion.div key={i} className="feature" variants={fadeUp}>
-              <div className="icon">{f.icon}</div>
-              <p>{f.text}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
+            {/* TESTIMONIALS */}
+            <section className="testimonial-section">
+                <motion.h2
+                    className="testimonial-title"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                >
+                    What Our Users Say
+                </motion.h2>
+                <motion.div
+                    className="testimonial-grid"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerContainer}
+                >
+                    <motion.div className="testimonial-card" variants={fadeInUp}>
+                        <div className="role">Software Engineer</div>
+                        <h4>Sarah Jenkins</h4>
+                        <p>"I built my portfolio in 5 minutes. The AI wrote better copy than I could have myself. Highly recommended!"</p>
+                    </motion.div>
+                    <motion.div className="testimonial-card" variants={fadeInUp}>
+                        <div className="role">Graphic Designer</div>
+                        <h4>Mike Ross</h4>
+                        <p>"The templates are gorgeous. I got 3 job offers within a week of sharing my new site."</p>
+                    </motion.div>
+                    <motion.div className="testimonial-card" variants={fadeInUp}>
+                        <div className="role">Student</div>
+                        <h4>Emily Chen</h4>
+                        <p>"As a fresh grad, I didn't know where to start. This tool made it so easy to look professional."</p>
+                    </motion.div>
+                </motion.div>
+            </section>
 
-      <motion.div
-        className="extra-section"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={stagger}
-      >
-        <motion.div className="extra-content" variants={fadeLeft}>
-          <h2>Smart online portfolio website maker</h2>
-          <p>
-            Create a portfolio website that’s as unique and creative as you are.
-            Impress potential clients and employers from the get-go with a
-            stunning portfolio design made using ProFolio.AI free online
-            portfolio website builder. Easily create professional-looking
-            portfolios that showcase your skills, qualifications, and best work.
-          </p>
-        </motion.div>
+            {/* FAQ SECTION */}
+            <section className="faq-section">
+                <div className="faq-container">
+                    <div className="faq-header">
+                        <motion.h2
+                            className="faq-title"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            Frequently Asked Questions
+                        </motion.h2>
+                        <motion.p
+                            className="faq-subtitle"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                        >
+                            Everything you need to know about the product and billing. Can't find the answer you're looking for?
+                            <br />
+                            <a href="mailto:support@portfolio-ai.com" className="faq-contact-link">Chat to our friendly team</a>.
+                        </motion.p>
+                    </div>
 
-        <motion.div className="extra-image" variants={fadeRight}>
-          <img
-            src={Section1}
-            alt="Example portfolio template"
-            className="extra-responsive-img"
-            loading="lazy"
-          />
-        </motion.div>
-
-        <motion.div className="extra-content" variants={fadeLeft}>
-          <p>
-            Powered by our smart drag-and-drop editing tools and features, you
-            can create a creative portfolio website in minutes. Showcase your
-            projects, work experiences, and skills through beautiful layouts and
-            publish instantly.
-          </p>
-          <Button
-            className="cta-btn"
-            onClick={handlePrimaryActionClick}
-            aria-label="Start building portfolio"
-          >
-            {isAuthenticated ? "Go to Dashboard" : "Start Building"}
-          </Button>
-        </motion.div>
-      </motion.div>
-      <motion.div
-        className="three-divs-section"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={stagger}
-      >
-        {[
-          {
-            title: "Showcase your best work in one site",
-            text: "A good portfolio website design is made out of well-chosen pieces that tell your story. Whether you are a writer, designer, or developer, highlight your best projects.",
-          },
-          {
-            title: "Get your digital portfolio in minutes",
-            text: "Publish and share your new portfolio with just a few clicks. Create a one-page portfolio with a free ProFolio.AI domain, or connect your custom domain.",
-          },
-          {
-            title: "Spotlight your printed portfolio",
-            text: "When you need a physical copy of your portfolio, ProFolio.AI Print is ready. Choose a template and get noticed both online and offline.",
-          },
-        ].map((d, i) => (
-          <motion.div key={i} className="three-div" variants={fadeUp}>
-            <h2>{d.title}</h2>
-            <p>{d.text}</p>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      <motion.div
-        className="cta-banner"
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <h2>
-          Create digital portfolios for products, services, and brands in
-          minutes
-        </h2>
-        <button
-          className="cta-button"
-          onClick={handlePrimaryActionClick}
-          aria-label="Make a digital portfolio"
-        >
-          {isAuthenticated ? "Go to Dashboard" : "Make a digital portfolio"}
-        </button>
-      </motion.div>
-      <motion.div
-        className="testimonial-section"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={stagger}
-      >
-        <h2 className="testimonial-title">What people say about ProFolio.AI</h2>
-
-        <div className="testimonial-grid">
-          {[
-            {
-              name: "Student User",
-              role: "Built Portfolio from Resume",
-              text: "I uploaded my resume and within minutes ProFolio.AI created a complete portfolio site. It looked professional and really helped me showcase my academic projects.",
-            },
-            {
-              name: "Job Seeker",
-              role: "AI-Enhanced Personal Branding",
-              text: "The AI-generated content gave me polished project descriptions and skill summaries that I could never phrase so well on my own.",
-            },
-            {
-              name: "Freelancer",
-              role: "Instant Website Deployment",
-              text: "ProFolio.AI saved me hours of setup. I deployed instantly and shared my portfolio link with clients without worrying about hosting.",
-            },
-            {
-              name: "Career Switcher",
-              role: "From Resume to Online Identity",
-              text: "Having a professional website helped me present my transferable skills clearly. ProFolio.AI made the whole process effortless.",
-            },
-          ].map((t, i) => (
-            <motion.div key={i} className="testimonial-card" variants={fadeUp}>
-              <h4>{t.name}</h4>
-              <p className="role">{t.role}</p>
-              <p>{t.text}</p>
-            </motion.div>
-          ))}
+                    <div className="faq-list">
+                        <AnimatePresence>
+                            {faqs.map((faq, index) => (
+                                <motion.div
+                                    key={index}
+                                    className={`faq-item ${activeIndex === index ? 'active' : ''}`}
+                                    onClick={() => toggleFAQ(index)}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1 }}
+                                >
+                                    <button className="faq-question">
+                                        <span className="question-text">{faq.question}</span>
+                                        <motion.span
+                                            className="faq-toggle-icon"
+                                            animate={{ rotate: activeIndex === index ? 180 : 0 }}
+                                        >
+                                            <i className="bi bi-chevron-down"></i>
+                                        </motion.span>
+                                    </button>
+                                    <motion.div
+                                        className="faq-answer-wrapper"
+                                        initial={false}
+                                        animate={{ height: activeIndex === index ? "auto" : 0, opacity: activeIndex === index ? 1 : 0 }}
+                                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                                        style={{ overflow: "hidden" }}
+                                    >
+                                        <div className="faq-answer">
+                                            <p>{faq.answer}</p>
+                                        </div>
+                                    </motion.div>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                </div>
+            </section>
         </div>
-      </motion.div>
-      <motion.div
-        className="foot-button"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <Button
-          className="cta-btn"
-          onClick={handlePrimaryActionClick}
-          aria-label="Create portfolio"
-        >
-          {isAuthenticated ? "Go to Dashboard" : "Create a portfolio website"}
-        </Button>
-
-        <Button
-          variant="link"
-          className="link-btn"
-          onClick={handleHowItWorksClick}
-          aria-label="See how it works"
-        >
-          See How it Works
-        </Button>
-      </motion.div>
-    </>
-  );
-}
+    );
+};
 
 export default Home;

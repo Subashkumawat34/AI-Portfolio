@@ -10,28 +10,28 @@ const AIContentGeneration = () => {
       {/* Hero Section */}
       <motion.header
         className="feature-hero"
-        initial={{ opacity: 0, y: -40 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
         >
           AI-Powered Content Generation
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
         >
-          Transform resumes into professional portfolio websites with the power
-          of NLP and Generative AI — no coding, no design skills required.
+          Transform your resume into a professional portfolio website instantly.
+          Our advanced NLP engine crafts engaging narratives for you—no writing skills needed.
         </motion.p>
       </motion.header>
 
-      {/* Why Use AI */}
+      {/* Intro / Why AI */}
       <motion.section
         className="feature-section"
         initial={{ opacity: 0, y: 30 }}
@@ -39,42 +39,32 @@ const AIContentGeneration = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        <h2>🌟 Why Use AI for Portfolios?</h2>
+        <h2>Why Choose AI?</h2>
         <p>
-          In today’s fast-paced and competitive job market, having a
-          professional portfolio is no longer optional—it’s essential. However,
-          creating one manually can be{" "}
-          <strong>
-            time-consuming, repetitive, and technically challenging
-          </strong>
-          .
-          <br /> <br />
-          With <strong>ProFolio.AI</strong>, our intelligent engine automates
-          the process by extracting data from your resume, refining it into
-          polished website sections, and presenting it in a visually appealing,
-          recruiter-ready format.
+          Writing about yourself is hard. ProFolio.AI analyzes your experience and
+          generates recruiter-ready content that highlights your strengths.
         </p>
+
         <motion.ul
           className="ai-benefits-list"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={{
-            hidden: { opacity: 0, y: 20 },
+            hidden: { opacity: 0 },
             visible: {
               opacity: 1,
-              y: 0,
-              transition: { staggerChildren: 0.15 },
+              transition: { staggerChildren: 0.1 },
             },
           }}
         >
           {[
-            "✨ Smart extraction of personal details, skills, and experiences",
-            "📝 AI-enhanced summaries that highlight your achievements",
-            "🎯 SEO-friendly descriptions to improve online visibility",
-            "📂 Auto-structured portfolio content by categories",
-            "🌐 Multiple modern templates to match your style",
-            "🕒 Save hours compared to building manually",
+            { text: "Smart Resume Parsing", icon: "📄" },
+            { text: "Recruiter-Ready Summaries", icon: "✍️" },
+            { text: "SEO-Optimized Descriptions", icon: "🚀" },
+            { text: "Auto-Formatted Projects", icon: "✨" },
+            { text: "Skill Highlighting", icon: "⭐" },
+            { text: "Instant Updates & Edits", icon: "🔄" },
           ].map((benefit, index) => (
             <motion.li
               key={index}
@@ -82,41 +72,37 @@ const AIContentGeneration = () => {
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },
               }}
-              transition={{ duration: 0.5 }}
             >
-              {benefit}
+              <span>{benefit.icon}</span> {benefit.text}
             </motion.li>
           ))}
         </motion.ul>
       </motion.section>
 
-      {/* Statistics Section */}
-      <motion.section
+      {/* Stats Section */}
+      <motion.div
         className="stats-section"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
         {[
-          { number: "5,000+", label: "Portfolios Generated" },
-          { number: "97%", label: "Satisfaction Rate" },
-          { number: "< 5min", label: "Average Time" },
+          { number: "10x", label: "Faster Creation" },
+          { number: "95%", label: "Placement Rate" },
+          { number: "24/7", label: "AI Availability" },
         ].map((stat, index) => (
           <motion.div
             key={index}
             className="stat-card"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.2, duration: 0.6 }}
             whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
             <span className="stat-number">{stat.number}</span>
             <span className="stat-label">{stat.label}</span>
           </motion.div>
         ))}
-      </motion.section>
+      </motion.div>
 
       {/* How It Works */}
       <motion.section
@@ -141,29 +127,27 @@ const AIContentGeneration = () => {
           }}
         >
           {[
-            "Upload your resume in PDF or DOCX format, or fill in your details manually through our intuitive form. Our system ensures compatibility with most resume formats so nothing important gets left out.",
-            "Our AI engine uses advanced Natural Language Processing (NLP) to extract key details from your resume. It automatically rewrites and formats the content into a clean, professional tone suitable for portfolio presentation.",
-            "All extracted and enhanced content is structured into categories like About, Skills, Education, Experience, and Projects. This ensures your portfolio is well-organized and easy for recruiters or viewers to navigate.",
-            "Instantly preview your portfolio in real time and make edits to customize text, colors, or layout. Once you’re satisfied, you’re just one click away from deploying a professional website live on the internet.",
+            "Upload your resume (PDF/DOCX) or enter key details manually.",
+            "Our AI extracts, organizes, and enhances your professional story.",
+            "Choose a template and customize the generated content effortlessly.",
+            "Deploy your stunning new portfolio with a single click.",
           ].map((step, index) => (
             <motion.div
               className="step"
               key={index}
               variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
+                hidden: { opacity: 0, x: -20 },
+                visible: { opacity: 1, x: 0 },
               }}
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.6 }}
             >
-              <span>{`${index + 1}️⃣`}</span>
+              <span>{index + 1}</span>
               <p>{step}</p>
             </motion.div>
           ))}
         </motion.div>
       </motion.section>
 
-      {/* Sections Auto-Generate */}
+      {/* Auto-Generated Sections */}
       <motion.section
         className="feature-section"
         initial={{ opacity: 0, y: 30 }}
@@ -171,7 +155,8 @@ const AIContentGeneration = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        <h2>Sections You Can Auto-Generate</h2>
+        <h2>Complete Content Coverage</h2>
+        <p>From your bio to your contact info, we handle every section.</p>
         <motion.div
           className="section-grid"
           initial="hidden"
@@ -181,48 +166,40 @@ const AIContentGeneration = () => {
             hidden: { opacity: 0 },
             visible: {
               opacity: 1,
-              transition: { staggerChildren: 0.15 },
+              transition: { staggerChildren: 0.05 },
             },
           }}
         >
           {[
-            "About Me",
-            "Education",
-            "Work Experience",
-            "Projects & Case Studies",
-            "Skills & Tools",
-            "Certifications",
-            "Achievements",
-            "Contact & Social Links",
-          ].map((section, index) => (
+            "Professional Bio", "Work History", "Education",
+            "Core Skills", "Project Showcase", "Certifications",
+            "Awards", "Contact Info",
+          ].map((item, index) => (
             <motion.div
               className="section-card"
               key={index}
               variants={{
-                hidden: { opacity: 0, scale: 0.9 },
+                hidden: { opacity: 0, scale: 0.8 },
                 visible: { opacity: 1, scale: 1 },
               }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.5 }}
             >
-              {section}
+              {item}
             </motion.div>
           ))}
         </motion.div>
       </motion.section>
 
-      {/* Highlight CTA */}
+      {/* CTA */}
       <motion.section
         className="feature-highlight"
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.6 }}
       >
-        <h2>Professional Portfolios in Minutes</h2>
+        <h2>Ready to Stand Out?</h2>
         <p>
-          With AI Content Generation, anyone — from students to professionals —
-          can build a modern, recruiter-ready portfolio that stands out.
+          Join thousands of professionals building their careers with ProFolio.AI.
         </p>
         <motion.button
           className="primary-btn"
@@ -230,7 +207,7 @@ const AIContentGeneration = () => {
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/generate-website")}
         >
-          Generate My Portfolio
+          Start Generating Now
         </motion.button>
       </motion.section>
     </div>

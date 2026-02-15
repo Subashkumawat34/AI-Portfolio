@@ -86,10 +86,10 @@ body {
 }
 
 .auth-container input.form-control:focus {
-  border-color: var(--primary-orange);
+  border-color: var(--primary-orange) !important;
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(255, 79, 0, 0.1);
-  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 79, 0, 0.1) !important;
+  outline: none !important;
   animation: input-blink 0.6s ease-in-out;
 }
 

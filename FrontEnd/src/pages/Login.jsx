@@ -36,7 +36,6 @@ function Login({ onLoginSuccess }) {
 
       if (result.success && result.jwtToken && result.name) {
         handleSuccess(result.message || "Login successful!");
-        handleSuccess(result.message || "Login successful!");
         onLoginSuccess(result.name, result.jwtToken, result.user);
       } else {
         handleError(
@@ -62,7 +61,6 @@ function Login({ onLoginSuccess }) {
             type="email"
             name="email"
             id="email"
-            autoFocus
             placeholder="Email Address"
             value={loginInfo.email}
             required

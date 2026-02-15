@@ -84,159 +84,132 @@ const SuccessPage = () => {
                 animate="visible"
                 variants={containerVariants}
             >
-                {/* Animated Success Icon */}
-                <motion.div className="success-icon-wrapper" variants={itemVariants}>
-                    <motion.div
-                        className="success-icon"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.3 }}
-                    >
-                        <i className="bx bx-check"></i>
+                {/* Header Section */}
+                <div className="success-header">
+                    <motion.div className="success-icon-container" variants={itemVariants}>
+                        <div className="glow-effect"></div>
+                        <i className="bi bi-check2-all success-main-icon"></i>
                     </motion.div>
-                    <div className="success-ring"></div>
-                </motion.div>
 
-                {/* Main Heading */}
-                <motion.h1 className="success-title" variants={itemVariants}>
-                    <span className="gradient-text">Portfolio Live!</span>
-                </motion.h1>
-                <motion.p className="success-subtitle" variants={itemVariants}>
-                    Your digital presence has been successfully launched.
-                </motion.p>
+                    <motion.div className="title-group" variants={itemVariants}>
+                        <h1 className="success-title">
+                            <span className="premium-gradient-text">Portfolio Published!</span>
+                        </h1>
+                        <p className="success-subtitle">
+                            Your dream portfolio is now live and ready to impress.
+                        </p>
+                    </motion.div>
+                </div>
 
-                {/* Main Card with QR Code and URL */}
-                <motion.div className="deployment-card glass-panel" variants={itemVariants}>
-                    <div className="qr-section">
-                        <div className="qr-code-scan-container">
-                            <div className="qr-code-wrapper">
+                {/* Main Premium Card */}
+                <motion.div className="premium-morphic-card" variants={itemVariants}>
+                    <div className="card-top">
+                        <div className="qr-container">
+                            <div className="qr-box">
                                 <QRCodeSVG
                                     value={deploymentUrl}
-                                    size={160}
+                                    size={140}
                                     level="H"
-                                    includeMargin={true}
-                                    bgColor="#ffffff"
-                                    fgColor="#2d3748"
+                                    includeMargin={false}
+                                    bgColor="transparent"
+                                    fgColor="#ffffff"
+                                />
+                                <motion.div
+                                    className="scanner-line-enhanced"
+                                    animate={{ top: ['2%', '98%', '2%'] }}
+                                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                                 />
                             </div>
-                            <motion.div
-                                className="scan-line"
-                                animate={{ top: ['0%', '100%', '0%'] }}
-                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                            />
+                            <span className="qr-hint">Scan to preview</span>
                         </div>
-                        <p className="qr-label">
-                            <i className="bx bx-scan"></i> Scan to Preview
-                        </p>
-                    </div>
 
-                    <div className="url-section">
-                        <h3>Your Live URL</h3>
-                        <div className="url-display-wrapper">
-                            <div className="url-display">
+                        <div className="url-container">
+                            <h3 className="status-label">Live Deployment Link</h3>
+                            <div className="url-status-bar">
+                                <div className="url-icon"><i className="bi bi-link-45deg"></i></div>
                                 <input
                                     type="text"
                                     readOnly
                                     value={deploymentUrl}
-                                    className="url-input"
+                                    className="url-text-field"
                                 />
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
                                     onClick={copyToClipboard}
-                                    className={`copy-btn ${copied ? 'copied' : ''}`}
-                                    title="Copy URL"
+                                    className={`premium-copy-btn ${copied ? 'copied' : ''}`}
                                 >
-                                    <i className={`bx ${copied ? 'bx-check' : 'bx-copy'}`}></i>
+                                    {copied ? <i className="bi bi-check-lg"></i> : <i className="bi bi-copy"></i>}
                                 </motion.button>
                             </div>
-                        </div>
-                        <div className="primary-actions">
-                            <motion.a
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                href={deploymentUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-primary btn-glow"
-                            >
-                                <i className="bx bx-rocket"></i> Launch Website
-                            </motion.a>
-                            {repoUrl && (
+
+                            <div className="action-button-group">
                                 <motion.a
-                                    whileHover={{ scale: 1.02 }}
+                                    whileHover={{ y: -4, boxShadow: '0 10px 20px rgba(255, 140, 0, 0.4)' }}
                                     whileTap={{ scale: 0.98 }}
-                                    href={repoUrl}
+                                    href={deploymentUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="btn btn-secondary"
+                                    className="launch-btn-premium"
                                 >
-                                    <i className="bx bxl-github"></i> Source Code
+                                    <i className="bi bi-rocket-takeoff"></i> Launch Site
                                 </motion.a>
-                            )}
+
+                                {repoUrl && (
+                                    <motion.a
+                                        whileHover={{ y: -4, boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)' }}
+                                        whileTap={{ scale: 0.98 }}
+                                        href={repoUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="github-btn-premium"
+                                    >
+                                        <i className="bi bi-github"></i> View Repo
+                                    </motion.a>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="card-divider"></div>
+
+                    {/* Features Badges */}
+                    <div className="feature-badges">
+                        <div className="badge-item">
+                            <i className="bi bi-lightning-charge-fill"></i> Vercel
+                        </div>
+                        <div className="badge-item">
+                            <i className="bi bi-shield-check"></i> SSL
+                        </div>
+                        <div className="badge-item">
+                            <i className="bi bi-layers-half"></i> SEO
+                        </div>
+                        <div className="badge-item">
+                            <i className="bi bi-phone"></i> RESPONSIVE
                         </div>
                     </div>
                 </motion.div>
 
-                {/* Info Grid */}
-                <motion.div className="info-grid" variants={containerVariants}>
-                    {[
-                        { icon: 'bxl-github', title: 'GitHub Hosted', desc: 'Secure Version Control' },
-                        { icon: 'bx-cloud-lightning', title: 'Vercel Deployed', desc: 'Global CDN Speed' },
-                        { icon: 'bx-devices', title: 'Responsive', desc: 'Mobile Optimized' },
-                        { icon: 'bx-lock-alt', title: 'SSL Secure', desc: 'HTTPS Encryption' }
-                    ].map((item, index) => (
-                        <motion.div
-                            key={index}
-                            className="info-card glass-panel-sm"
-                            variants={itemVariants}
-                            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                        >
-                            <div className="info-icon">
-                                <i className={`bx ${item.icon}`}></i>
-                            </div>
-                            <h4>{item.title}</h4>
-                            <p>{item.desc}</p>
-                        </motion.div>
-                    ))}
-                </motion.div>
-
-                {/* Share Section */}
-                <motion.div className="share-section glass-panel" variants={itemVariants}>
-                    <h3>Share Your Achievement</h3>
-                    <div className="share-buttons">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={shareToLinkedIn}
-                            className="share-btn linkedin"
-                        >
-                            <i className="bx bxl-linkedin"></i> LinkedIn
-                        </motion.button>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={shareToTwitter}
-                            className="share-btn twitter"
-                        >
-                            <i className="bx bxl-twitter"></i> Twitter
-                        </motion.button>
+                {/* Share Section - Minimal */}
+                <motion.div className="share-minimal" variants={itemVariants}>
+                    <p>Share Success:</p>
+                    <div className="share-link-group">
+                        <button onClick={shareToLinkedIn} className="share-icon-btn linkedin-color">
+                            <i className="bi bi-linkedin"></i>
+                        </button>
+                        <button onClick={shareToTwitter} className="share-icon-btn x-color">
+                            <i className="bi bi-twitter-x"></i>
+                        </button>
                     </div>
                 </motion.div>
 
-                {/* Action Buttons */}
-                <motion.div className="bottom-actions" variants={itemVariants}>
-                    <button
-                        onClick={() => navigate('/generate')}
-                        className="btn btn-outline"
-                    >
-                        <i className="bx bx-plus-circle"></i> New Project
+                {/* Final Navigation */}
+                <motion.div className="nav-actions-bottom" variants={itemVariants}>
+                    <button onClick={() => navigate('/generate-website')} className="nav-link-btn">
+                        <i className="bi bi-plus-lg"></i> Build Another
                     </button>
-                    <button
-                        onClick={() => navigate('/dashboard')}
-                        className="btn btn-primary"
-                    >
-                        <i className="bx bxs-dashboard"></i> Dashboard
+                    <button onClick={() => navigate('/dashboard')} className="nav-primary-btn">
+                        Go to Dashboard <i className="bi bi-arrow-right"></i>
                     </button>
                 </motion.div>
             </motion.div>

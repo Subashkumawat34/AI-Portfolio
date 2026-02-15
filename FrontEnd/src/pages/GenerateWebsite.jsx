@@ -20,20 +20,23 @@ const templates = [
     id: 1,
     name: "Creative Start",
     type: "free",
+    price: 0,
     previewImage: Template1,
     tagline: "Showcase Your Talent with Style",
   },
   {
     id: 2,
     name: "Profolio Modern",
-    type: "paid",
+    type: "free",
+    price: 0,
     previewImage: Template2,
     tagline: "Sleek Portfolio, Built for Impact",
   },
   {
     id: 3,
     name: "Classic Showcase",
-    type: "free",
+    type: "paid",
+    price: 399,
     previewImage: Template3,
     tagline: "Timeless Design, Professional Presentation",
   },
@@ -41,13 +44,15 @@ const templates = [
     id: 4,
     name: "Portfolio Elite",
     type: "paid",
+    price: 499,
     previewImage: Template4,
     tagline: "Feature-Rich Portal for Top Creators",
   },
   {
     id: 5,
     name: "Vivid Portfolio",
-    type: "free",
+    type: "paid",
+    price: 599,
     previewImage: Template5,
     tagline: "Colorful Layout for Creative Profiles",
   },
@@ -55,10 +60,21 @@ const templates = [
     id: 6,
     name: "Tech Profolio",
     type: "paid",
+    price: 699,
     previewImage: Template6,
     tagline: "Advanced Tools for Tech Portfolios",
   },
 ];
+
+const loadRazorpay = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 const initialPortfolioFormFields = {
   personalInfo: {
@@ -454,31 +470,12 @@ const GenerateWebsite = () => {
     setDeploymentStep(1); // Start: Creating Repo
     setDeploymentError("");
 
+    // Validatio passed, proceed to generation
+    await generateWebsite(formData);
+  };
+
+  const generateWebsite = async (submissionData) => {
     try {
-      // Transform Skills
-      const transformedSkills = [];
-      const categories = {};
-
-      formData.skills.forEach(skill => {
-        const cat = skill.category || "Other";
-        if (!categories[cat]) {
-          categories[cat] = [];
-        }
-        categories[cat].push(skill);
-      });
-
-      Object.keys(categories).forEach(cat => {
-        transformedSkills.push({
-          category: cat,
-          items: categories[cat]
-        });
-      });
-
-      const submissionData = {
-        ...formData,
-        skills: transformedSkills
-      };
-
       // Simulate Steps for UX (Real backend doesn't stream progress yet)
       // We will update steps based on time or success for now
 
@@ -552,12 +549,79 @@ const GenerateWebsite = () => {
       setDeploymentError(error.message || "An unexpected error occurred.");
       // Keep overlay open to show error
     }
-    // We don't set setIsSubmitting(false) to keep overlay if needed or we handle it in overlay
+  };
+
+  const handlePaidTemplateClick = async (template) => {
+    const isLoaded = await loadRazorpay();
+    if (!isLoaded) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+    try {
+      // 1. Create Order
+      const orderResponse = await axios.post("http://localhost:8080/payment/order", {
+        amount: template.price,
+        currency: "INR"
+      });
+
+      if (!orderResponse.data.success) {
+        throw new Error("Failed to create payment order");
+      }
+
+      const { order } = orderResponse.data;
+
+      // Get user details from localStorage for prefill
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Portfolio Generator",
+        description: `Payment for ${template.name}`,
+        order_id: order.id,
+        handler: async function (response) {
+          // 2. Verify Payment
+          try {
+            const verifyResponse = await axios.post("http://localhost:8080/payment/verify", {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verifyResponse.data.success) {
+              // Payment Successful, unlock the template
+              setSelectedTemplate(template);
+            } else {
+              alert("Payment verification failed. Please try again.");
+            }
+          } catch (error) {
+            console.error("Payment Verification Error:", error);
+            alert("Payment verification failed. Please contact support.");
+          }
+        },
+        prefill: {
+          name: user.name || "",
+          email: user.email || "",
+          contact: user.phone || "",
+        },
+        theme: {
+          color: "#ff8c00",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+
+    } catch (error) {
+      console.error("Payment setup error:", error);
+      alert("Could not initiate payment. Please try again.");
+    }
   };
 
   const resetState = () => {
     setSelectedTemplate(null);
-    setSubmitSuccess(false);
     setFormData(initialPortfolioFormFields);
     setDeploymentUrl("");
     setSubmitError("");
@@ -611,7 +675,7 @@ const GenerateWebsite = () => {
               <div
                 key={template.id}
                 className="template-card"
-                onClick={() => setSelectedTemplate(template)}
+                onClick={() => template.type === 'free' ? setSelectedTemplate(template) : handlePaidTemplateClick(template)}
               >
                 <img
                   src={template.previewImage}
@@ -619,7 +683,19 @@ const GenerateWebsite = () => {
                   className="template-image"
                 />
                 <div className="template-info">
-                  <h3>{template.name}</h3>
+                  <div className="template-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3>{template.name}</h3>
+                    <span className={`template-badge ${template.type}`} style={{
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '0.8rem',
+                      fontWeight: 'bold',
+                      backgroundColor: template.type === 'free' ? '#28a745' : '#ffc107',
+                      color: template.type === 'free' ? 'white' : 'black'
+                    }}>
+                      {template.type === 'free' ? 'FREE' : `₹${template.price}`}
+                    </span>
+                  </div>
                   <p>{template.tagline}</p>
                 </div>
               </div>

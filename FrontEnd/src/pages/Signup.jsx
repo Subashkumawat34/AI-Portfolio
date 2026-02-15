@@ -66,7 +66,6 @@ function Signup() {
             type="text"
             name="name"
             id="name"
-            autoFocus
             placeholder="Full Name"
             value={signupInfo.name}
             required

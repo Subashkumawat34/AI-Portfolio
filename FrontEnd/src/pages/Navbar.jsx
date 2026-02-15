@@ -9,8 +9,16 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
     navigate(path);
   };
 
+  const closeMenu = () => {
+    const navbarCollapse = document.getElementById("navbarSupportedContent");
+    if (navbarCollapse && navbarCollapse.classList.contains("show")) {
+      navbarCollapse.classList.remove("show"); // Standard Bootstrap close
+    }
+  };
+
   const handleLogoutClick = (e) => {
     if (e) e.preventDefault();
+    closeMenu();
     if (onLogout) {
       onLogout();
     }
@@ -19,7 +27,7 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
   return (
     <nav className="navbar navbar-expand-lg navbar-custom fixed-top">
       <div className="container-fluid navbar-container-custom">
-        <Link className="navbar-brand zapier-logo-link" to="/">
+        <Link className="navbar-brand zapier-logo-link" to="/" onClick={closeMenu}>
           <div className="logo-bar"></div>
           <span className="logo-text">ProFolio.AI</span>
         </Link>
@@ -40,12 +48,12 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
             {isAuthenticated ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/dashboard">
+                  <Link className="nav-link" to="/dashboard" onClick={closeMenu}>
                     My Dashboard
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/generate-website">
+                  <Link className="nav-link" to="/generate-website" onClick={closeMenu}>
                     Generate Website
                   </Link>
                 </li>
@@ -67,12 +75,12 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
                   aria-labelledby="featuresDropdown"
                 >
                   <li>
-                    <Link className="dropdown-item" to="/features/ai-content">
+                    <Link className="dropdown-item" to="/features/ai-content" onClick={closeMenu}>
                       AI Content Generation
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/features/deployment">
+                    <Link className="dropdown-item" to="/features/deployment" onClick={closeMenu}>
                       One-Click Deploy
                     </Link>
                   </li>
@@ -80,7 +88,7 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
               </li>
             )}
             <li className="nav-item">
-              <Link className="nav-link" to="/how-it-works">
+              <Link className="nav-link" to="/how-it-works" onClick={closeMenu}>
                 How It Works
               </Link>
             </li>
@@ -97,12 +105,12 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
               </a>
               <ul className="dropdown-menu" aria-labelledby="featuresDropdown">
                 <li>
-                  <Link className="dropdown-item" to="/resources/tutorials">
+                  <Link className="dropdown-item" to="/resources/tutorials" onClick={closeMenu}>
                     Tutorials
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/resources/blogs">
+                  <Link className="dropdown-item" to="/resources/blogs" onClick={closeMenu}>
                     Blogs
                   </Link>
                 </li>
@@ -112,7 +120,7 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
             {!isAuthenticated ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/About">
+                  <Link className="nav-link" to="/About" onClick={closeMenu}>
                     About
                   </Link>
                 </li>
@@ -120,7 +128,7 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/generate-website">
+                  <Link className="nav-link" to="/generate-website" onClick={closeMenu}>
                     Upload Resume
                   </Link>
                 </li>
@@ -162,7 +170,7 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/account">
+                    <Link className="dropdown-item" to="/account" onClick={closeMenu}>
                       Account Settings
                     </Link>
                   </li>
@@ -182,13 +190,13 @@ const Navbar = ({ isAuthenticated = false, userName = "User", user, onLogout }) 
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/login">
+                  <Link className="nav-link" to="/login" onClick={closeMenu}>
                     Log in
                   </Link>
                 </li>
 
                 <li className="nav-item">
-                  <Link to="/signup" className="btn btn-signup">
+                  <Link to="/signup" className="btn btn-signup" onClick={closeMenu}>
                     Sign up
                   </Link>
                 </li>

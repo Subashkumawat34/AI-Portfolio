@@ -3,7 +3,7 @@ import "../../styles/Resources.css";
 
 const Tutorials = () => {
   return (
-    <div className="resources-container">
+    <div className="resources-container tutorials-page">
       <motion.header
         className="resources-hero tutorials-hero"
         initial={{ opacity: 0, scale: 0.95 }}

@@ -26,6 +26,7 @@
     "mongoose": "^8.15.0",
     "multer": "^2.0.2",
     "pdf-parse": "^1.1.1",
+    "razorpay": "^2.9.6",
     "simple-git": "^3.28.0"
   },
   "devDependencies": {

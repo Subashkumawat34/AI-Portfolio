@@ -166,6 +166,36 @@
   background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);
 }
 
+/* Tutorials Page Specific Styles (Dark Mode) */
+.tutorials-page .resources-section {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.tutorials-page .resources-section.alt-bg {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+}
+
+.tutorials-page .resources-section h2,
+.tutorials-page .step-header h2 {
+  color: #ffffff !important;
+}
+
+.tutorials-page .resources-section p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tutorials-page .resources-section .tutorials-highlight h3,
+.tutorials-page .resources-section .tutorials-highlight li,
+.tutorials-page .resources-section .tutorials-example h4,
+.tutorials-page .resources-section .tutorials-example code,
+.tutorials-page .resources-section .tutorials-note strong,
+.tutorials-page .resources-section .tutorials-note {
+  /* Keep these readable inside their light-colored boxes */
+  color: inherit;
+}
+
 /* Tutorial Step Header */
 .tutorial-step {
   display: flex;
