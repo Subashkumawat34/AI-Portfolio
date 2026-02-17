@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 
 /**
  * Send a message to the AI chatbot and get a response

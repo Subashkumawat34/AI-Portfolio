@@ -287,7 +287,7 @@ const GenerateWebsite = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/extract-resume",
+        `${import.meta.env.VITE_BACKEND_URL || "http://localhost:8080"}/extract-resume`,
         formDataUpload,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -490,7 +490,7 @@ const GenerateWebsite = () => {
 
       // Actual API Call
       const response = await axios.post(
-        "http://localhost:8080/generator/generate-and-deploy",
+        `${import.meta.env.VITE_BACKEND_URL || "http://localhost:8080"}/generator/generate-and-deploy`,
         {
           template: selectedTemplate.id,
           data: submissionData,
@@ -560,7 +560,7 @@ const GenerateWebsite = () => {
 
     try {
       // 1. Create Order
-      const orderResponse = await axios.post("http://localhost:8080/payment/order", {
+      const orderResponse = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8080"}/payment/order`, {
         amount: template.price,
         currency: "INR"
       });
@@ -584,7 +584,7 @@ const GenerateWebsite = () => {
         handler: async function (response) {
           // 2. Verify Payment
           try {
-            const verifyResponse = await axios.post("http://localhost:8080/payment/verify", {
+            const verifyResponse = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8080"}/payment/verify`, {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
