@@ -3,6 +3,7 @@ const simpleGit = require("simple-git");
 const path = require("path");
 const ejs = require("ejs");
 const fs = require("fs-extra");
+const os = require("os");
 
 const { GITHUB_USERNAME, GITHUB_TOKEN, VERCEL_TOKEN, VERCEL_TEAM_ID } =
   process.env;
@@ -53,14 +54,13 @@ const generateAndDeploy = async (req, res) => {
     });
   }
 
-  // Create a safe repository name using the full name
   const repoName = `${formData.personalInfo.fullName
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "")}-${Date.now()}`;
 
-  const localRepoPath = path.join(__dirname, "..", "temp-repos", repoName);
+  const localRepoPath = path.join(os.tmpdir(), "profolio-repos", repoName);
 
   try {
     console.log(`📂 Creating temporary directory at ${localRepoPath}`);
@@ -141,6 +141,11 @@ const generateAndDeploy = async (req, res) => {
     const remoteUrl = `https://${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/${repoName}.git`;
 
     await git.init();
+
+    // ✅ Fix: Set Git Identity for Production environments
+    await git.addConfig("user.email", "generator@profolio.ai");
+    await git.addConfig("user.name", "ProFolio AI Generator");
+
     await git.add("./*");
     await git.commit("Initial commit: Portfolio Website generated");
     await git.branch(["-M", "main"]);
