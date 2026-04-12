@@ -21,10 +21,10 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 120, damping: 14 } 
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 120, damping: 14 }
   }
 };
 
@@ -99,7 +99,7 @@ const MyDashboard = () => {
     <div className="dashboard-wrapper">
       <div className="dashboard-overlay"></div>
 
-      <motion.div 
+      <motion.div
         className="dashboard-container"
         variants={containerVariants}
         initial="hidden"
@@ -124,9 +124,9 @@ const MyDashboard = () => {
         {/* Stats Section */}
         <motion.section className="stats-section" variants={containerVariants}>
           {stats.map((stat, idx) => (
-            <motion.div 
-              key={idx} 
-              className="stat-card" 
+            <motion.div
+              key={idx}
+              className="stat-card"
               variants={itemVariants}
               whileHover={hoverEffect}
             >
@@ -185,7 +185,7 @@ const MyDashboard = () => {
         {/* Sites Grid */}
         <AnimatePresence mode="popLayout">
           {filteredSites.length === 0 ? (
-            <motion.div 
+            <motion.div
               className="empty-state"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -199,8 +199,8 @@ const MyDashboard = () => {
           ) : (
             <motion.div className="site-grid" variants={containerVariants}>
               {filteredSites.map((site) => (
-                <motion.div 
-                  key={site.id} 
+                <motion.div
+                  key={site.id}
                   className="site-card"
                   variants={itemVariants}
                   whileHover={hoverEffect}

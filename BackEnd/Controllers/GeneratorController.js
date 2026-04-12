@@ -382,8 +382,8 @@ const generateAndDeploy = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message:
-        error.message || "An unexpected error occurred during deployment",
+      message: error.message || "An unexpected error occurred during deployment",
+      details: error.response?.data || null
     });
   }
 };
