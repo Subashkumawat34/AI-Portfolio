@@ -9,6 +9,7 @@ function Login({ onLoginSuccess }) {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +25,7 @@ function Login({ onLoginSuccess }) {
     }
 
     try {
+      setIsLoading(true);
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: {
@@ -45,9 +47,10 @@ function Login({ onLoginSuccess }) {
     } catch (err) {
       console.error("Login API error:", err);
       handleError("An error occurred during login. Please try again later.");
+    } finally {
+      setIsLoading(false);
+      setLoginInfo((prev) => ({ ...prev, password: "" }));
     }
-
-    setLoginInfo((prev) => ({ ...prev, password: "" }));
   };
 
   return (
@@ -78,8 +81,19 @@ function Login({ onLoginSuccess }) {
             required
           />
         </div>
-        <button className="btn btn-primary w-100" type="submit">
-          Login
+        <button
+          className={`btn btn-primary w-100 ${isLoading ? "loading" : ""}`}
+          type="submit"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <span className="loader-spinner"></span>
+              <span className="btn-text">Logging in...</span>
+            </>
+          ) : (
+            <span className="btn-text">Login</span>
+          )}
         </button>
         <div className="mt-3 text-center">
           Don't have an account? <Link to="/signup">Sign up</Link>

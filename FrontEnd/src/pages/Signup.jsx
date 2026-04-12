@@ -10,6 +10,7 @@ function Signup() {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -29,6 +30,7 @@ function Signup() {
     }
 
     try {
+      setIsLoading(true);
       const response = await fetch(`${API_BASE}/auth/signup`, {
         method: "POST",
         headers: {
@@ -52,6 +54,8 @@ function Signup() {
     } catch (err) {
       console.error("Signup API error:", err);
       handleError("An error occurred during signup. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,8 +99,19 @@ function Signup() {
             required
           />
         </div>
-        <button className="btn btn-primary w-100" type="submit">
-          Sign Up
+        <button
+          className={`btn btn-primary w-100 ${isLoading ? "loading" : ""}`}
+          type="submit"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <span className="loader-spinner"></span>
+              <span className="btn-text">Signing up...</span>
+            </>
+          ) : (
+            <span className="btn-text">Sign Up</span>
+          )}
         </button>
         <div className="mt-3 text-center">
           Already have an account? <Link to="/login">Login</Link>

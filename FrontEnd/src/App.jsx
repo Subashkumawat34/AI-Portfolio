@@ -152,7 +152,7 @@ function App() {
       token: token,
       user: userObj
     });
-    navigate("/dashboard");
+    navigate("/home");
   };
 
   const handleProfileUpdate = (updatedUser) => {

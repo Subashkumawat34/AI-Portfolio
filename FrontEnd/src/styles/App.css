@@ -166,3 +166,43 @@ body {
     border-color: #ff4f00;
   }
 }
+
+/* Loader Spinner - Professional & Sleek */
+.loader-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s ease-in-out infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Primary Button Loading State */
+.auth-container button.btn-primary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.auth-container button.btn-primary:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  background: var(--primary-gradient);
+  filter: grayscale(0.2);
+}
+
+.auth-container button.btn-primary .btn-text {
+  transition: all 0.2s ease;
+}
