@@ -1,5 +1,5 @@
 const axios = require("axios");
-const simpleGit = require("simple-git");
+// const simpleGit = require("simple-git"); // Removed to use GitHub API directly for better stability in production
 const path = require("path");
 const ejs = require("ejs");
 const fs = require("fs-extra");
@@ -42,6 +42,32 @@ const collectLocalImagePaths = (data) => {
   return [...new Set(paths)]; // Remove duplicates
 };
 
+// Helper to push a file to GitHub via Content API
+const pushFileToGitHub = async (repoName, filePath, content, isBase64 = false) => {
+  const { GITHUB_USERNAME, GITHUB_TOKEN } = process.env;
+  
+  try {
+    const response = await axios.put(
+      `https://api.github.com/repos/${GITHUB_USERNAME}/${repoName}/contents/${filePath}`,
+      {
+        message: `Add ${filePath}`,
+        content: isBase64 ? content : Buffer.from(content).toString("base64"),
+      },
+      {
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`❌ Error pushing ${filePath} to GitHub:`, error.response?.data || error.message);
+    throw new Error(`Failed to push ${filePath} to GitHub: ${error.response?.data?.message || error.message}`);
+  }
+};
+
+
 const generateAndDeploy = async (req, res) => {
   // NOTE: updated destructuring to match frontend POST
   const { template: templateId, data: formData } = req.body;
@@ -59,6 +85,23 @@ const generateAndDeploy = async (req, res) => {
     .replace(/[^a-z0-9-]/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "")}-${Date.now()}`;
+
+  // ✅ Environment Validation for Production
+  const { GITHUB_USERNAME, GITHUB_TOKEN, VERCEL_TOKEN } = process.env;
+  console.log("🚦 Validating environment variables...");
+  if (!GITHUB_USERNAME || !GITHUB_TOKEN || !VERCEL_TOKEN) {
+    const missing = [];
+    if (!GITHUB_USERNAME) missing.push("GITHUB_USERNAME");
+    if (!GITHUB_TOKEN) missing.push("GITHUB_TOKEN");
+    if (!VERCEL_TOKEN) missing.push("VERCEL_TOKEN");
+    
+    console.error(`❌ Missing required env vars: ${missing.join(", ")}`);
+    return res.status(500).json({
+      success: false,
+      message: `Production environment is not fully configured. Missing: ${missing.join(", ")}. Please add these to your deployment dashboard.`,
+    });
+  }
+  console.log(`✅ Env validation passed (Username: ${GITHUB_USERNAME}, Tokens: [HIDDEN])`);
 
   const localRepoPath = path.join(os.tmpdir(), "profolio-repos", repoName);
 
@@ -135,74 +178,59 @@ const generateAndDeploy = async (req, res) => {
       );
     }
 
-    // 3. Push to GitHub
-    console.log("⬆️ Pushing files to GitHub");
-    const git = simpleGit(localRepoPath);
-    const remoteUrl = `https://${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/${repoName}.git`;
+    // ✅ Wait for GitHub to initialize the repo (prevents 404 in subsequent file pushes)
+    console.log("⏳ Waiting for GitHub repo to initialize...");
+    await sleep(3000);
 
-    await git.init();
+    // 3. Push to GitHub using API
+    console.log("⬆️ Pushing files to GitHub via API");
+    
+    // Push index.html
+    await pushFileToGitHub(repoName, "index.html", renderedHtml);
+    
+    // Push vercel.json
+    await pushFileToGitHub(repoName, "vercel.json", vercelJsonString);
 
-    // ✅ Fix: Set Git Identity for Production environments
-    await git.addConfig("user.email", "generator@profolio.ai");
-    await git.addConfig("user.name", "ProFolio AI Generator");
+    // Handle local images and push them to GitHub
+    const imagePaths = collectLocalImagePaths(formData);
+    const filesToDeploy = [
+      {
+        file: "index.html",
+        data: Buffer.from(renderedHtml).toString("base64"),
+        encoding: "base64",
+      },
+      {
+        file: "vercel.json",
+        data: Buffer.from(vercelJsonString).toString("base64"),
+        encoding: "base64",
+      }
+    ];
 
-    await git.add("./*");
-    await git.commit("Initial commit: Portfolio Website generated");
-    await git.branch(["-M", "main"]);
-    await git.addRemote("origin", remoteUrl);
-    await git.push("origin", "main");
+    for (const imagePath of imagePaths) {
+      const fullSourcePath = path.join(__dirname, "..", imagePath);
+      if (await fs.pathExists(fullSourcePath)) {
+        const imageBuffer = await fs.readFile(fullSourcePath);
+        const imageBase64 = imageBuffer.toString("base64");
+        
+        // Push image to GitHub
+        console.log(`📸 Pushing image to GitHub: ${imagePath}`);
+        await pushFileToGitHub(repoName, imagePath, imageBase64, true);
 
-    // 4. Create Vercel deployment using file-based approach
+        // Add to Vercel deployment list
+        filesToDeploy.push({
+          file: imagePath,
+          data: imageBase64,
+          encoding: "base64",
+        });
+      } else {
+        console.warn(`⚠️ Image not found: ${fullSourcePath}`);
+      }
+    }
+
+    // 4. Create Vercel deployment
     console.log("🚀 Creating Vercel deployment");
     let deploymentResponse;
     try {
-      // Read the generated files
-      const htmlContent = await fs.readFile(
-        path.join(localRepoPath, "index.html"),
-        "utf-8"
-      );
-
-      const filesToDeploy = [
-        {
-          file: "index.html",
-          data: Buffer.from(htmlContent).toString("base64"),
-          encoding: "base64",
-        },
-      ];
-
-      // Add vercel.json to deployment
-      const vercelJsonContent = await fs.readFile(
-        path.join(localRepoPath, "vercel.json"),
-        "utf-8"
-      );
-      filesToDeploy.push({
-        file: "vercel.json",
-        data: Buffer.from(vercelJsonContent).toString("base64"),
-        encoding: "base64",
-      });
-
-      // Handle local images
-      const imagePaths = collectLocalImagePaths(formData);
-      for (const imagePath of imagePaths) {
-        const fullSourcePath = path.join(__dirname, "..", imagePath);
-        if (await fs.pathExists(fullSourcePath)) {
-          // Add to Vercel deployment
-          const imageBuffer = await fs.readFile(fullSourcePath);
-          filesToDeploy.push({
-            file: imagePath,
-            data: imageBuffer.toString("base64"),
-            encoding: "base64",
-          });
-
-          // Copy to temp repo for GitHub push
-          const destPath = path.join(localRepoPath, imagePath);
-          await fs.ensureDir(path.dirname(destPath));
-          await fs.copy(fullSourcePath, destPath);
-          console.log(`📸 Included image: ${imagePath}`);
-        } else {
-          console.warn(`⚠️ Image not found: ${fullSourcePath}`);
-        }
-      }
 
 
 
