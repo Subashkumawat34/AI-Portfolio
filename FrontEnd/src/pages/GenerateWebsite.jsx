@@ -126,19 +126,9 @@ const initialPortfolioFormFields = {
   ],
   skills: [
     {
-      name: "React.js",
-      percentage: "90",
-      category: "Frontend",
-    },
-    {
-      name: "Node.js",
-      percentage: "85",
-      category: "Backend",
-    },
-    {
-      name: "Git",
-      percentage: "80",
-      category: "Tools",
+      name: "",
+      percentage: "",
+      category: "",
     },
   ],
   technologies: [
